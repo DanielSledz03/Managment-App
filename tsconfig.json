@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    // "noImplicitAny": true,
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@images/*": ["./src/asset/images/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@view/*": ["./src/view/*"],
+      "@store/*": ["./src/store/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@texts/*": ["./src/components/texts/*"]
+    }
+  },
+  // "include": ["../client/src/Module*", "./src*"]
+  "exclude": ["./node_modules/component/*", "./node_modules/components/*"]
+}

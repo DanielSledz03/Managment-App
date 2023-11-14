@@ -1,9 +1,9 @@
 import GradientText from '@/components/GradientText/GradientText';
 import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
-import colors from '@/constants/colors';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import userIcon from '../../../assets/icons/fox.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { colors } from '@constants';
 
 const Dashboard = () => {
   const today = new Date().toLocaleDateString('pl-PL', {

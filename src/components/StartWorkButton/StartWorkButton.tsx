@@ -1,4 +1,4 @@
-import colors from '@/constants/colors';
+import { colors } from '@constants/colors';
 import { useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';

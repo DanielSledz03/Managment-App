@@ -4,7 +4,7 @@ import MaskedView from '@react-native-masked-view/masked-view';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface GradientTextProps extends TextProps {
-  colors?: string[]; // Optional, an array of color strings
+  colors?: string[];
 }
 
 const GradientText: React.FC<GradientTextProps> = ({

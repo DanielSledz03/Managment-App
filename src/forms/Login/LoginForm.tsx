@@ -1,6 +1,6 @@
 import SimpleButton from '@/components/Button/SimpleButton/SimpleButton';
 import Input from '@/components/Input/Input';
-import colors from '@/constants/colors';
+import { colors } from '@constants/colors';
 import { RootState } from '@/store';
 import { AuthSliceActions } from '@/store/Auth/Auth.reducer';
 import { useMutation } from '@tanstack/react-query';

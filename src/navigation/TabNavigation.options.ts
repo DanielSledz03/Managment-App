@@ -1,4 +1,4 @@
-import colors from '@/constants/colors';
+import { colors } from '@constants/colors';
 import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 
 export const TabNavigationOptions: BottomTabNavigationOptions = {

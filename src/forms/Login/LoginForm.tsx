@@ -51,6 +51,7 @@ const LoginForm = () => {
       <Input
         secureTextEntry={true}
         value={password}
+        icon
         placeholder='Hasło'
         onChangeText={(e) => dispatch(AuthSliceActions.setPassword(e))}
       />

@@ -11,6 +11,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { Provider, useSelector } from 'react-redux';
 import store, { RootState } from '@/store';
 import Dashboard from '@/screens/Dashboard/Dashboard';
+import TabNavigation from '@/navigation/TabNavigation';
 
 const queryClient = new QueryClient();
 
@@ -37,7 +38,7 @@ function App(): JSX.Element {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={{ flex: 1 }}>
-          <LoginForm />
+          <TabNavigation />
         </SafeAreaView>
       </QueryClientProvider>
     </Provider>

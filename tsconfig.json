@@ -13,6 +13,7 @@
       "@store/*": ["./src/store/*"],
       "@constants/*": ["./src/constants/*"],
       "@texts/*": ["./src/components/texts/*"],
+      "@icons/*": ["./src/assets/icons/*"],
       "@/*": ["./src/*"]
     }
   },

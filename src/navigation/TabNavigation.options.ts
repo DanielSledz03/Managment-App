@@ -9,7 +9,9 @@ export const TabNavigationOptions: BottomTabNavigationOptions = {
     justifyContent: 'space-between',
     fontSize: 12,
   },
+
   tabBarStyle: {
+    opacity: 0,
     borderTopWidth: 1,
     borderTopColor: colors.white,
     height: '11%',

@@ -11,7 +11,6 @@ export const TabNavigationOptions: BottomTabNavigationOptions = {
   },
 
   tabBarStyle: {
-    opacity: 0,
     borderTopWidth: 1,
     borderTopColor: colors.white,
     height: '11%',

@@ -4,9 +4,8 @@ import { RootState } from '@/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import colors from '@/constants/colors';
 import { TabNavigationOptions } from './TabNavigation.options';
+import { TabBar } from './TabBar/TabBar';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +18,15 @@ export default function TabNavigation() {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={TabNavigationOptions}>
+      <Tab.Navigator
+        initialRouteName='Dashboard'
+        screenOptions={TabNavigationOptions}
+        tabBar={TabBar}
+      >
         <Tab.Screen name='Dashboard' component={Dashboard} />
+        <Tab.Screen name='Tasks' component={Dashboard} />
+        <Tab.Screen name='WorkSchedule' component={Dashboard} />
+        <Tab.Screen name='Account' component={Dashboard} />
       </Tab.Navigator>
     </NavigationContainer>
   );

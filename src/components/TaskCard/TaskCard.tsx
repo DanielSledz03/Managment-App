@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'center',
     position: 'relative',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
 
   timeText: {
     position: 'absolute',
     top: 10,
-    left: 10,
+    left: 20,
     color: colors.greyLight1,
     fontSize: 11,
     fontFamily: 'Jost-Medium',

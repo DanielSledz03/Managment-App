@@ -13,6 +13,7 @@ interface TabItemProps {
   name: string;
   label: string;
   iconType: IconType;
+  routeName: string;
 }
 
 export const TabBar = ({ navigation }: BottomTabBarProps) => {
@@ -38,8 +39,8 @@ export const TabBar = ({ navigation }: BottomTabBarProps) => {
   const getIconColor = (name: string) =>
     focusedScreen === name ? colors.orangeBright : colors.white;
 
-  const TabItem = ({ name, label, iconType }: TabItemProps) => (
-    <TouchableOpacity onPress={() => handlePress(label)} style={styles.container}>
+  const TabItem = ({ name, label, iconType, routeName }: TabItemProps) => (
+    <TouchableOpacity onPress={() => handlePress(routeName)} style={styles.container}>
       {renderIcon(label, name, iconType)}
       <Text style={[styles.text, { color: getIconColor(label) }]}>{label}</Text>
     </TouchableOpacity>
@@ -47,10 +48,20 @@ export const TabBar = ({ navigation }: BottomTabBarProps) => {
 
   return (
     <View style={styles.bottombar}>
-      <TabItem name='home' label='Dashboard' iconType='Entypo' />
-      <TabItem name='checklist' label='Zadania' iconType='Octicons' />
-      <TabItem name='calendar-days' label='Grafik' iconType='FontAwesome6' />
-      <TabItem name='text-account' label='Konto' iconType='MaterialCommunityIcons' />
+      <TabItem name='home' label='Dashboard' routeName='Dashboard' iconType='Entypo' />
+      <TabItem name='checklist' label='Zadania' routeName='Tasks' iconType='Octicons' />
+      <TabItem
+        name='calendar-days'
+        label='Grafik'
+        routeName='WorkSchedule'
+        iconType='FontAwesome6'
+      />
+      <TabItem
+        name='text-account'
+        label='Konto'
+        routeName='Account'
+        iconType='MaterialCommunityIcons'
+      />
     </View>
   );
 };
@@ -62,6 +73,7 @@ const styles = StyleSheet.create({
     height: 90,
     backgroundColor: colors.greyDark2,
     justifyContent: 'space-between',
+    alignItems: 'center',
     flexDirection: 'row',
     position: 'absolute',
     bottom: 0,

@@ -8,6 +8,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -20,10 +21,17 @@ const LoginForm = () => {
           email: login,
           password: password,
         })
-        .then((res: { data: { access_token: string } }) => {
+        .then(async (res: { data: { access_token: string; refresh_token: string } }) => {
           Alert.alert('Sukces', 'Zalogowano pomyślnie!');
+
+          const accessToken = JSON.stringify(res.data.access_token);
+          await AsyncStorage.setItem('access_token', accessToken);
+
+          const refreshToken = JSON.stringify(res.data.refresh_token);
+          await AsyncStorage.setItem('refresh_token', refreshToken);
+
           dispatch(AuthSliceActions.setAccessToken(res.data.access_token));
-          console.log(res.data.access_token);
+          dispatch(AuthSliceActions.setRefreshToken(res.data.refresh_token));
         })
         .catch((err) => {
           Alert.alert('Błąd', 'Nie udało się zalogować.');

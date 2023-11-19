@@ -4,12 +4,14 @@ export interface AuthState {
   login: string;
   password: string;
   accessToken: string | null;
+  refreshToken?: string | null;
 }
 
 const initialState: AuthState = {
   accessToken: null,
   login: '',
   password: '',
+  refreshToken: null,
 };
 
 const AuthSlice = createSlice({
@@ -24,8 +26,12 @@ const AuthSlice = createSlice({
       state.password = action.payload;
     },
 
-    setAccessToken(state, action: PayloadAction<string>) {
+    setAccessToken(state, action: PayloadAction<string | null>) {
       state.accessToken = action.payload;
+    },
+
+    setRefreshToken(state, action: PayloadAction<string | null>) {
+      state.refreshToken = action.payload;
     },
   },
 });

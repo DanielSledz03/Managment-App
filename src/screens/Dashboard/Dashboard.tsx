@@ -5,6 +5,8 @@ import { colors } from '@constants/colors';
 import HeaderBar from '@view/HeaderBar/HeaderBar';
 import { InfoCard } from '@components/InfoCard/InfoCard';
 import { TaskCard } from '@components/TaskCard/TaskCard';
+import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Dashboard = () => {
   const today = new Date().toLocaleDateString('pl-PL', {

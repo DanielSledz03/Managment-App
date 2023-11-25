@@ -16,7 +16,14 @@ import refreshTokenAPI from '@utils/refreshToken';
 import { Alert } from 'react-native';
 import verifyTokenAPI from '@utils/verifyToken';
 
-const Tab = createBottomTabNavigator();
+export type RootStackParamList = {
+  Dashboard: undefined; // Brak parametrów dla ekranu Dashboard
+  Tasks: undefined; // Ekran Tasks przyjmuje parametr `taskId`
+  WorkSchedule: undefined; // Brak parametrów dla WorkSchedule
+  Account: { userId: string }; // Ekran Account przyjmuje parametr `userId`
+};
+
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 export default function TabNavigation() {
   const { accessToken, refreshToken } = useSelector((state: RootState) => state.auth);

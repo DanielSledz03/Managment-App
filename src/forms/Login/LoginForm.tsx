@@ -9,15 +9,18 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const { login, password } = useSelector((state: RootState) => state.auth);
 
+  console.log(Config.HOSTNAME);
+
   const mutation = useMutation({
     mutationFn: async () => {
       return await axios
-        .post('http://192.168.0.164:3000/auth/signin', {
+        .post(Config.HOSTNAME + '/auth/signin', {
           email: login,
           password: password,
         })

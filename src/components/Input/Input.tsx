@@ -16,7 +16,12 @@ const Input: React.FC<CustomTextInputProps> = ({ icon = false, ...rest }) => {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.textInput} placeholderTextColor={colors.greyMedium2} {...rest} />
+      <TextInput
+        autoCapitalize='none'
+        style={styles.textInput}
+        placeholderTextColor={colors.greyMedium2}
+        {...rest}
+      />
       {icon && (
         <TouchableOpacity onPress={onIconPress} style={styles.icon}>
           <Icon

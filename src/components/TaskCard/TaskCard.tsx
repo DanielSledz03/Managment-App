@@ -1,4 +1,5 @@
 import { colors } from '@constants/colors';
+import { timeDiff } from '@utils/timeDiff';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -17,7 +18,7 @@ export const TaskCard = ({ taskTime, title, priority }: Props) => {
         colors={['#101010', '#262626']}
         style={styles.gradientBackground}
       >
-        <Text style={styles.timeText}>{taskTime}</Text>
+        <Text style={styles.timeText}>{timeDiff(taskTime)}</Text>
         <Text style={styles.titleText}>{title}</Text>
 
         <Image style={styles.arrowIcon} source={require('../../assets/icons/arrow.png')} />

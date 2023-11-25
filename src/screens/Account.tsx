@@ -1,11 +1,24 @@
 import GradientText from '@/components/GradientText/GradientText';
 import { ScrollView, StyleSheet } from 'react-native';
 import { colors } from '@constants/colors';
+import GradientButton from '@components/Button/SimpleButton/SimpleButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { AuthSliceActions } from '@store/Auth/Auth.reducer';
 
 const Account = () => {
+  const dispatch = useDispatch();
   return (
     <ScrollView style={styles.container}>
       <GradientText style={styles.heading}>Konto</GradientText>
+      <GradientButton
+        title='Wyloguj'
+        onPress={() => {
+          AsyncStorage.clear();
+          dispatch(AuthSliceActions.setAccessToken(null));
+          dispatch(AuthSliceActions.setRefreshToken(null));
+        }}
+      />
     </ScrollView>
   );
 };

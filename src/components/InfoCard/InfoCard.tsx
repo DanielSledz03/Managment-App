@@ -5,11 +5,12 @@ import LinearGradient from 'react-native-linear-gradient';
 interface Props {
   title: string;
   value: string;
+  onPress?: () => void;
 }
 
-export const InfoCard = ({ title, value }: Props) => {
+export const InfoCard = ({ title, value, onPress }: Props) => {
   return (
-    <TouchableOpacity style={styles.cardContainer}>
+    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}

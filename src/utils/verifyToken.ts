@@ -1,9 +1,9 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Config from 'react-native-config';
 
 const verifyTokenAPI = async (refreshToken: string) => {
   const axiosInstance = axios.create({
-    baseURL: 'http://192.168.0.164:3000', // Twoje API endpoint
+    baseURL: Config.HOSTNAME, // Twoje API endpoint
   });
   try {
     const response = await axiosInstance.post('/auth/verifyToken', {

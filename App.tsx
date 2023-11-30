@@ -10,7 +10,7 @@ import { AppState, AppStateStatus, Platform, SafeAreaView } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import { Provider, useSelector } from 'react-redux';
 import store, { RootState } from '@/store';
-import Dashboard from '@/screens/Dashboard/Dashboard';
+import Dashboard from '@/screens/Dashboard';
 import TabNavigation from '@/navigation/TabNavigation';
 
 const queryClient = new QueryClient();

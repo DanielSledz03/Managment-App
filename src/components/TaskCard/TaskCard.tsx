@@ -7,11 +7,12 @@ interface Props {
   taskTime: string;
   title: string;
   priority?: boolean;
+  onPress: () => void;
 }
 
-export const TaskCard = ({ taskTime, title, priority }: Props) => {
+export const TaskCard = ({ taskTime, title, priority, onPress }: Props) => {
   return (
-    <TouchableOpacity style={styles.cardContainer}>
+    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}

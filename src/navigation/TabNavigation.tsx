@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginForm from '@/forms/Login/LoginForm';
-import Dashboard from '@/screens/Dashboard/Dashboard';
+import Dashboard from '@/screens/Dashboard';
 import { RootState } from '@/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';

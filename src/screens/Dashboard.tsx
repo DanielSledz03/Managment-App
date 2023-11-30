@@ -9,20 +9,23 @@ import { useCallback, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@store/index';
 import { NavigationProp, RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Task } from '@/types/Task.type';
 import { RootStackParamList } from '@/navigation/TabNavigation';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import Config from 'react-native-config';
+import { useAxios } from '@utils/axios';
+import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;
 
 const Dashboard = () => {
-  const { accessToken } = useSelector((state: RootState) => state.auth);
   const queryClient = useQueryClient();
   const navigation = useNavigation<DashboardNavigationProp>();
+  const axios = useAxios();
+  const dispatch = useDispatch();
 
   const today = new Date().toLocaleDateString('pl-PL', {
     day: 'numeric',
@@ -33,13 +36,7 @@ const Dashboard = () => {
   const tasks: { data?: Task[] } = useQuery({
     queryKey: ['tasks'],
     queryFn: async () => {
-      const axiosInstance = axios.create({
-        baseURL: Config.HOSTNAME,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      return await axiosInstance.get('/task').then((res) => res.data);
+      return await axios.get('/task').then((res) => res.data);
     },
     refetchOnWindowFocus: true,
   });
@@ -70,7 +67,7 @@ const Dashboard = () => {
       >
         <InfoCard
           title='Przypisane zadania'
-          value={tasks.data?.length.toString() || '0'}
+          value={tasks?.data?.length?.toString() || '0'}
           onPress={() => navigation.navigate('Tasks')}
         />
         <InfoCard title='Twoje wynagrodzenie' value={'1445 zł'} />
@@ -82,6 +79,10 @@ const Dashboard = () => {
 
           {tasks.data.slice(0, 2).map((task: Task) => (
             <TaskCard
+              onPress={() => {
+                navigation.navigate('Tasks');
+                dispatch(TaskModalSliceAction.toggleModalOpen(task.id));
+              }}
               key={task.id}
               taskTime={task.createdAt}
               title={task.title}

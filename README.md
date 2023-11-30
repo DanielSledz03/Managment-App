@@ -7,11 +7,13 @@ Welcome to the mobile application for Android and iOS - Managment App, created u
 ## Preview:
 
 The application is currently under development!
-<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="430" height="930">
+<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="200" height="432">
 
 ---
 
 ## Basic Information:
+
+``
 
 - **Name**: Managment App
 - **Version**: 0.0.3

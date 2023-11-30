@@ -6,8 +6,12 @@ Welcome to the mobile application for Android and iOS - Managment App, created u
 
 ## Preview:
 
-The application is currently under development!
+### The application is currently under development!
+
 <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="200" height="432">
+<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/tasks.png" width="200" height="432">
+<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/schedule.png" width="200" height="432">
+<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/salary.png" width="200" height="432">
 
 ---
 

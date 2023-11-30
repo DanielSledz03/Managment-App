@@ -7,15 +7,15 @@ Welcome to the mobile application for Android and iOS - Managment App, created u
 ## Preview:
 
 The application is currently under development!
-![Main Screen](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![Main Screen](https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png)
 
 ---
 
 ## Basic Information:
 
-- **Name**: omega-szkola
-- **Version**: 1.1.0
-- **Description**: This is a website project for the "Omega" primary school created using Next.js.
+- **Name**: Managment App
+- **Version**: 0.0.3
+- **Description**: Mobile Application created using React Native to better manage your business and employees.
 - **Author**: Daniel Śledź
 - **License**: MIT
 
@@ -27,11 +27,11 @@ To start working with this project, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone git@github.com:DanielSledz03/omega-school-page.git
+   git clone git@github.com:DanielSledz03/Managment-App.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd omega-szkola
+   cd FxFApp
    ```
 3. Install the dependencies:
    ```bash
@@ -39,18 +39,18 @@ To start working with this project, follow these steps:
    ```
 4. Run the project in development mode:
    ```bash
-   npm run dev
+   npm run start
+   ```
+5. Run the project on Android or iOS:
+   ```bash
+   npx react-native run-android
+   ```
+   ```bash
+   npx react-native run-ios
    ```
 
 ---
 
 ## Available Scripts:
 
-- `npm run dev`: Starts the Next.js development server.
-- `npm run build`: Builds the application for production.
-- `npm run start`: Runs the application in production mode.
-- `npm run lint`: Runs the Next.js linter.
-- `npm run lint-fix`: Fixes linting errors.
-- `npm run lint-check`: Checks for linting errors.
-- `npm run build-and-run`: Builds the application and runs it.
-- `npm run cypress`: Opens the Cypress testing tool.
+- `npm run start`: Starts the React Native development server.

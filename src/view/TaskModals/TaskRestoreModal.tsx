@@ -5,7 +5,7 @@ import { colors } from '@constants/colors';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { RootState } from '@store/index';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAxios } from '@utils/axios';
+import { useAxios } from '@/hooks/useAxios';
 import { useEffect, useMemo } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';

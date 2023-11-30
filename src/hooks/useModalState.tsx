@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery } from '@tanstack/react-query';
-import { useAxios } from '@utils/axios';
+import { useAxios } from '@/hooks/useAxios';
 import { useMemo } from 'react';
 
 const useModalState = () => {

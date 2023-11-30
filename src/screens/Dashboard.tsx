@@ -16,7 +16,7 @@ import { Task } from '@/types/Task.type';
 import { RootStackParamList } from '@/navigation/TabNavigation';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import Config from 'react-native-config';
-import { useAxios } from '@utils/axios';
+import { useAxios } from '@/hooks/useAxios';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;

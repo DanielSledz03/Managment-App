@@ -9,7 +9,7 @@ import { Task } from '@/types/Task.type';
 import { useFocusEffect } from '@react-navigation/native';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import TaskPreviewModal from '@view/TaskModals/TaskPreviewModal/TaskPreviewModal';
-import { useAxios } from '@utils/axios';
+import { useAxios } from '@/hooks/useAxios';
 import { useCallback, useMemo, useState } from 'react';
 import TaskRestoreModal from '@view/TaskModals/TaskRestoreModal';
 

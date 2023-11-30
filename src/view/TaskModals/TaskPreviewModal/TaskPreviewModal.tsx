@@ -4,7 +4,7 @@ import ModalComponent from '@components/Modal/Modal';
 import { colors } from '@constants/colors';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAxios } from '@utils/axios';
+import { useAxios } from '@/hooks/useAxios';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';

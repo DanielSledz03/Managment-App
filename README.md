@@ -8,16 +8,14 @@ Welcome to the mobile application for Android and iOS - Managment App, created u
 
 ### The application is currently under development!
 
-<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="200" height="432">
-<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/tasks.png" width="200" height="432">
-<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/schedule.png" width="200" height="432">
-<img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/salary.png" width="200" height="432">
-
----
+<div class="display: flex; justify-between: space-around;">
+   <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="200" height="432">
+   <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/tasks.png" width="200" height="432">
+   <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/schedule.png" width="200" height="432">
+   <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/salary.png" width="200" height="432">
+</div>
 
 ## Basic Information:
-
-``
 
 - **Name**: Managment App
 - **Version**: 0.0.3
@@ -48,9 +46,13 @@ To start working with this project, follow these steps:
    npm run start
    ```
 5. Run the project on Android or iOS:
+
    ```bash
    npx react-native run-android
    ```
+
+   or
+
    ```bash
    npx react-native run-ios
    ```

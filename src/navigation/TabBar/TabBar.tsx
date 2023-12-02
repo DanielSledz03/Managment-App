@@ -1,19 +1,21 @@
-import React from 'react';
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import Octicons from 'react-native-vector-icons/Octicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import HomeColored from '../../assets/icons/bottomBar/colored/home.svg';
+import ScheduleColored from '../../assets/icons/bottomBar/colored/schedule.svg';
+import TasksColored from '../../assets/icons/bottomBar/colored/tasks.svg';
+import UserColored from '../../assets/icons/bottomBar/colored/user.svg';
+import Task from '../../assets/icons/bottomBar/home.svg';
+import Home from '../../assets/icons/bottomBar/schedule.svg';
+import Schedule from '../../assets/icons/bottomBar/tasks.svg';
+import User from '../../assets/icons/bottomBar/user.svg';
 import { colors } from '@constants/colors'; // Assuming this is your color constants file
-
-type IconType = 'Entypo' | 'Octicons' | 'MaterialCommunityIcons' | 'FontAwesome6';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { ReactNode } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface TabItemProps {
-  name: string;
   label: string;
-  iconType: IconType;
   routeName: string;
+  iconName: ReactNode;
+  coloredIconName: ReactNode;
 }
 
 export const TabBar = ({ navigation }: BottomTabBarProps) => {
@@ -23,44 +25,41 @@ export const TabBar = ({ navigation }: BottomTabBarProps) => {
     navigation.navigate(name);
   };
 
-  const renderIcon = (label: string, name: string, type: IconType) => {
-    const icons = {
-      Entypo: <Entypo name={name} size={30} color={getIconColor(label)} />,
-      Octicons: <Octicons name={name} size={28} color={getIconColor(label)} />,
-      MaterialCommunityIcons: (
-        <MaterialCommunityIcons name={name} size={36} color={getIconColor(label)} />
-      ),
-
-      FontAwesome6: <FontAwesome6 name={name} size={30} color={getIconColor(label)} />,
-    };
-    return icons[type];
-  };
-
   const getIconColor = (name: string) =>
     focusedScreen === name ? colors.orangeBright : colors.white;
 
-  const TabItem = ({ name, label, iconType, routeName }: TabItemProps) => (
+  const TabItem = ({ label, routeName, iconName, coloredIconName }: TabItemProps) => (
     <TouchableOpacity onPress={() => handlePress(routeName)} style={styles.container}>
-      {renderIcon(label, name, iconType)}
-      <Text style={[styles.text, { color: getIconColor(label) }]}>{label}</Text>
+      {focusedScreen === routeName ? coloredIconName : iconName}
+      <Text style={[styles.text, { color: getIconColor(routeName) }]}>{label}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.bottombar}>
-      <TabItem name='home' label='Dashboard' routeName='Dashboard' iconType='Entypo' />
-      <TabItem name='checklist' label='Zadania' routeName='Tasks' iconType='Octicons' />
       <TabItem
-        name='calendar-days'
-        label='Grafik'
-        routeName='WorkSchedule'
-        iconType='FontAwesome6'
+        label='Dashboard'
+        routeName='Dashboard'
+        iconName={<Home />}
+        coloredIconName={<HomeColored />}
       />
       <TabItem
-        name='text-account'
+        label='Zadania'
+        routeName='Tasks'
+        iconName={<Task />}
+        coloredIconName={<TasksColored />}
+      />
+      <TabItem
+        label='Grafik'
+        routeName='WorkSchedule'
+        iconName={<Schedule />}
+        coloredIconName={<ScheduleColored />}
+      />
+      <TabItem
         label='Konto'
         routeName='Account'
-        iconType='MaterialCommunityIcons'
+        iconName={<User />}
+        coloredIconName={<UserColored />}
       />
     </View>
   );

@@ -1,15 +1,23 @@
-import { Task } from '@/types/Task.type';
 import GradientButton from '@components/Button/GradientButton/GradientButton';
 import { colors } from '@constants/colors';
 import { StyleSheet, Text } from 'react-native';
+import { Task } from '@/types/Task.type';
 
 interface Props {
   task: Task;
   date: string | null;
   handleTaskComplete: () => any;
+  handleTaskRejection: () => any;
+  handleTaskChangeAssignee?: () => any;
 }
 
-const TaskNotCompletedContent = ({ task, date, handleTaskComplete }: Props) => (
+const TaskNotCompletedContent = ({
+  task,
+  date,
+  handleTaskComplete,
+  handleTaskRejection,
+  handleTaskChangeAssignee,
+}: Props) => (
   <>
     <Text style={styles.title}>{task.title}</Text>
     <Text style={styles.description}>{task.description}</Text>
@@ -26,14 +34,14 @@ const TaskNotCompletedContent = ({ task, date, handleTaskComplete }: Props) => (
     />
     <GradientButton
       title='Przepisz'
-      onPress={() => null}
+      onPress={handleTaskChangeAssignee}
       containerStyle={styles.submitButton}
       textStyle={{ fontSize: 16 }}
       gradientStyle={{ borderRadius: 10 }}
     />
     <GradientButton
       title='Odrzuć'
-      onPress={() => null}
+      onPress={handleTaskRejection}
       containerStyle={styles.submitButton}
       textStyle={{ fontSize: 16 }}
       gradientStyle={{ borderRadius: 10 }}

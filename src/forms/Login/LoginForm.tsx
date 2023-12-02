@@ -1,15 +1,14 @@
 import SimpleButton from '@components/Button/GradientButton/GradientButton';
-import Input from '@/components/Input/Input';
 import { colors } from '@constants/colors';
-import { RootState } from '@/store';
-import { AuthSliceActions } from '@/store/Auth/Auth.reducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Alert } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import Config from 'react-native-config';
+import { useDispatch, useSelector } from 'react-redux';
+import Input from '@/components/Input/Input';
+import { RootState } from '@/store';
+import { AuthSliceActions } from '@/store/Auth/Auth.reducer';
 
 const LoginForm = () => {
   const dispatch = useDispatch();

@@ -1,11 +1,21 @@
-import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery } from '@tanstack/react-query';
-import { useAxios } from '@/hooks/useAxios';
 import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAxios } from '@/hooks/useAxios';
+import { Task } from '@/types/Task.type';
 
-const useModalState = () => {
+interface ModalState {
+  isModalOpen: boolean;
+  openedTaskId: string | undefined;
+  task: Task | null;
+  date: string | null;
+  refetch: () => any;
+  toggleModal: () => any;
+}
+
+const useModalState = (): ModalState => {
   const dispatch = useDispatch();
   const axios = useAxios();
   const { isOpen, openedTaskId } = useSelector((state: RootState) => state.taskModal);

@@ -1,8 +1,9 @@
 import { colors } from '@constants/colors';
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 
-const TextArea = ({ ...rest }) => {
+type CustomTextInputProps = TextInputProps;
+
+const TextArea = ({ ...rest }: CustomTextInputProps) => {
   return (
     <View style={styles.container}>
       <TextInput
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Jost',
     textAlignVertical: 'top',
     padding: 10,
+    minHeight: 150,
   },
 });
 

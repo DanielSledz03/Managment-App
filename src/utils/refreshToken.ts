@@ -1,5 +1,5 @@
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import Config from 'react-native-config';
 
 const refreshTokenAPI = async (refreshToken: string) => {

@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
 import AuthReducer from './Auth/Auth.reducer';
 import TaskModalReducer from './Modal/TaskModal.reducer';
+import { configureStore } from '@reduxjs/toolkit';
 
 const store = configureStore({
   reducer: {

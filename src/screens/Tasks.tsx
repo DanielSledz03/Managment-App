@@ -1,17 +1,19 @@
-import { ScrollView, StyleSheet, View, Text } from 'react-native';
-import { colors } from '@constants/colors';
-import { TaskCard } from '@components/TaskCard/TaskCard';
 import TabButton from '@components/TabButton/TabButton';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@store/index';
-import { Task } from '@/types/Task.type';
+import { TaskCard } from '@components/TaskCard/TaskCard';
+import { colors } from '@constants/colors';
 import { useFocusEffect } from '@react-navigation/native';
+import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import TaskModalAssigneeChange from '@view/TaskModals/TaskModalAssigneeChange';
 import TaskPreviewModal from '@view/TaskModals/TaskPreviewModal/TaskPreviewModal';
-import { useAxios } from '@/hooks/useAxios';
-import { useCallback, useMemo, useState } from 'react';
+import TaskRejectionModal from '@view/TaskModals/TaskRejectionModal';
 import TaskRestoreModal from '@view/TaskModals/TaskRestoreModal';
+import { useCallback, useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAxios } from '@/hooks/useAxios';
+import { Task, TaskStatus } from '@/types/Task.type';
 
 type GroupedTasks = { [key: string]: Task[] };
 
@@ -21,8 +23,8 @@ const Tasks = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const isModalOpen = useSelector((state: RootState) => state.taskModal.isOpen);
-  const restoreTaskModalOpen = useSelector(
-    (state: RootState) => state.taskModal.restoreTaskModalOpen,
+  const { rejectionTaskModalOpen, restoreTaskModalOpen, assigneeChangeModalOpen } = useSelector(
+    (state: RootState) => state.taskModal,
   );
 
   const axios = useAxios();
@@ -40,7 +42,7 @@ const Tasks = () => {
       queryClient.invalidateQueries({
         queryKey: ['tasks'],
       });
-    }, [queryClient, completedTasksTab, isModalOpen]),
+    }, [queryClient, completedTasksTab, isModalOpen, rejectionTaskModalOpen, restoreTaskModalOpen]),
   );
 
   const getGroupLabel = (date: Date): string => {
@@ -85,6 +87,8 @@ const Tasks = () => {
     <>
       {isModalOpen && <TaskPreviewModal />}
       {restoreTaskModalOpen && <TaskRestoreModal />}
+      {rejectionTaskModalOpen && <TaskRejectionModal />}
+      {assigneeChangeModalOpen && <TaskModalAssigneeChange />}
 
       <ScrollView style={styles.container}>
         <Text style={styles.heading}>Lista zadań</Text>
@@ -102,13 +106,19 @@ const Tasks = () => {
         </View>
         <View style={{ marginBottom: 50 }}>
           {sortedAndGroupedTasks['Priorytet'] &&
-            sortedAndGroupedTasks['Priorytet'].filter(
-              (task: Task) => task.isCompleted === completedTasksTab,
+            sortedAndGroupedTasks['Priorytet'].filter((task: Task) =>
+              completedTasksTab
+                ? task.status === TaskStatus.Completed
+                : task.status === TaskStatus.InProgress,
             ).length > 0 && (
               <View>
                 <Text style={styles.dateLabel}>Priorytet</Text>
                 {sortedAndGroupedTasks['Priorytet']
-                  .filter((task: Task) => task.isCompleted === completedTasksTab)
+                  .filter((task: Task) =>
+                    completedTasksTab
+                      ? task.status === TaskStatus.Completed
+                      : task.status! === TaskStatus.InProgress,
+                  )
                   .map((task: Task) => (
                     <TaskCard
                       onPress={() => dispatch(TaskModalSliceAction.toggleModalOpen(task.id))}
@@ -123,12 +133,19 @@ const Tasks = () => {
           {Object.entries(sortedAndGroupedTasks).map(
             ([groupLabel, tasksForGroup]) =>
               groupLabel !== 'Priorytet' &&
-              tasksForGroup.filter((task: Task) => task.isCompleted === completedTasksTab).length >
-                0 && (
+              tasksForGroup.filter((task: Task) =>
+                completedTasksTab
+                  ? task.status === TaskStatus.Completed
+                  : task.status === TaskStatus.InProgress,
+              ).length > 0 && (
                 <View key={groupLabel}>
                   <Text style={styles.dateLabel}>{groupLabel}</Text>
                   {tasksForGroup
-                    .filter((task: Task) => task.isCompleted === completedTasksTab)
+                    .filter((task: Task) =>
+                      completedTasksTab
+                        ? task.status === TaskStatus.Completed
+                        : task.status === TaskStatus.InProgress,
+                    )
                     .map((task: Task) => (
                       <TaskCard
                         onPress={() => dispatch(TaskModalSliceAction.toggleModalOpen(task.id))}

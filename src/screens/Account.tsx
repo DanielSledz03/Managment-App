@@ -1,10 +1,10 @@
-import GradientText from '@/components/GradientText/GradientText';
-import { ScrollView, StyleSheet } from 'react-native';
-import { colors } from '@constants/colors';
 import GradientButton from '@components/Button/GradientButton/GradientButton';
+import { colors } from '@constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
 import { AuthSliceActions } from '@store/Auth/Auth.reducer';
+import { ScrollView, StyleSheet } from 'react-native';
+import { useDispatch } from 'react-redux';
+import GradientText from '@/components/GradientText/GradientText';
 
 const Account = () => {
   const dispatch = useDispatch();

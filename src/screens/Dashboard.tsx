@@ -1,23 +1,19 @@
-import GradientText from '@/components/GradientText/GradientText';
-import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { colors } from '@constants/colors';
-import HeaderBar from '@view/HeaderBar/HeaderBar';
 import { InfoCard } from '@components/InfoCard/InfoCard';
 import { TaskCard } from '@components/TaskCard/TaskCard';
-import { useCallback, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@store/index';
-import { NavigationProp, RouteProp, useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Task } from '@/types/Task.type';
-import { RootStackParamList } from '@/navigation/TabNavigation';
+import { colors } from '@constants/colors';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import Config from 'react-native-config';
-import { useAxios } from '@/hooks/useAxios';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import HeaderBar from '@view/HeaderBar/HeaderBar';
+import { useCallback } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import GradientText from '@/components/GradientText/GradientText';
+import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
+import { useAxios } from '@/hooks/useAxios';
+import { RootStackParamList } from '@/navigation/TabNavigation';
+import { Task } from '@/types/Task.type';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;
 

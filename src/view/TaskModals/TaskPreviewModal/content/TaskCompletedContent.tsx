@@ -1,7 +1,7 @@
-import { Task } from '@/types/Task.type';
 import GradientButton from '@components/Button/GradientButton/GradientButton';
 import { colors } from '@constants/colors';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { Task } from '@/types/Task.type';
 
 interface Props {
   task: Task;

@@ -1,6 +1,6 @@
-import GradientText from '@/components/GradientText/GradientText';
-import { ScrollView, StyleSheet } from 'react-native';
 import { colors } from '@constants/colors';
+import { ScrollView, StyleSheet } from 'react-native';
+import GradientText from '@/components/GradientText/GradientText';
 
 const WorkSchedule = () => {
   return (

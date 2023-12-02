@@ -1,16 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Animated,
-  TouchableWithoutFeedbackComponent,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { colors } from '@constants/colors';
 import { formatTimeDiff } from '@utils/formatTimeDiff';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Animated, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const StartWorkButton = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);

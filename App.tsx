@@ -1,17 +1,15 @@
-import LoginForm from '@/forms/Login/LoginForm';
+import NetInfo from '@react-native-community/netinfo';
 import {
-  QueryClient,
-  QueryClientProvider,
   focusManager,
   onlineManager,
+  QueryClient,
+  QueryClientProvider,
 } from '@tanstack/react-query';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { AppState, AppStateStatus, Platform, SafeAreaView } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
-import { Provider, useSelector } from 'react-redux';
-import store, { RootState } from '@/store';
-import Dashboard from '@/screens/Dashboard';
+import { Provider } from 'react-redux';
 import TabNavigation from '@/navigation/TabNavigation';
+import store from '@/store';
 
 const queryClient = new QueryClient();
 

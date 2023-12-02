@@ -1,20 +1,20 @@
-import { useEffect, useState, useCallback } from 'react';
+import { TabBar } from './TabBar/TabBar';
+import { TabNavigationOptions } from './TabNavigation.options';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoginForm from '@/forms/Login/LoginForm';
-import Dashboard from '@/screens/Dashboard';
-import { RootState } from '@/store';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { TabNavigationOptions } from './TabNavigation.options';
-import { TabBar } from './TabBar/TabBar';
-import Tasks from '@/screens/Tasks';
-import WorkSchedule from '@/screens/WorkSchedule';
-import Account from '@/screens/Account';
 import { AuthSliceActions } from '@store/Auth/Auth.reducer';
 import refreshTokenAPI from '@utils/refreshToken';
-import { Alert } from 'react-native';
 import verifyTokenAPI from '@utils/verifyToken';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import LoginForm from '@/forms/Login/LoginForm';
+import Account from '@/screens/Account';
+import Dashboard from '@/screens/Dashboard';
+import Tasks from '@/screens/Tasks';
+import WorkSchedule from '@/screens/WorkSchedule';
+import { RootState } from '@/store';
 
 export type RootStackParamList = {
   Dashboard: undefined; // Brak parametrów dla ekranu Dashboard

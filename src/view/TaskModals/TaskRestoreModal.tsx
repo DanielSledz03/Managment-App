@@ -1,14 +1,14 @@
-import { Task } from '@/types/Task.type';
 import GradientButton from '@components/Button/GradientButton/GradientButton';
 import ModalComponent from '@components/Modal/Modal';
 import { colors } from '@constants/colors';
-import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { RootState } from '@store/index';
+import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAxios } from '@/hooks/useAxios';
 import { useEffect, useMemo } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { useAxios } from '@/hooks/useAxios';
+import { Task } from '@/types/Task.type';
 
 const TaskRestoreModal = () => {
   const isModalOpen = useSelector((state: RootState) => state.taskModal.isOpen);
@@ -41,9 +41,9 @@ const TaskRestoreModal = () => {
     dispatch(TaskModalSliceAction.toggleModalOpen());
   };
 
-  if (!task) return <View />;
-
   const date = useMemo(() => {
+    if (!task) return null; // Handle the absence of 'task' gracefully
+
     return new Date(task.createdAt).toLocaleDateString('pl-PL', {
       day: 'numeric',
       month: 'long',
@@ -52,6 +52,8 @@ const TaskRestoreModal = () => {
       minute: 'numeric',
     });
   }, [task]);
+
+  if (!task) return <View />;
 
   return (
     <ModalComponent containerStyle={styles.container} isOpen={isModalOpen}>

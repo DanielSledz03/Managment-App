@@ -1,4 +1,4 @@
-import { Button, Modal, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 interface ModalProps {
   children: React.ReactNode;

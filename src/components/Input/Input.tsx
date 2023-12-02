@@ -1,6 +1,6 @@
 import { colors } from '@constants/colors';
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, TextInputProps } from 'react-native';
+import { StyleSheet, TextInput, TextInputProps, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 interface CustomTextInputProps extends TextInputProps {
@@ -11,7 +11,7 @@ const Input: React.FC<CustomTextInputProps> = ({ icon = false, ...rest }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const onIconPress = () => {
-    setIsPasswordVisible((prev) => !prev);
+    if (rest.secureTextEntry) setIsPasswordVisible((prev) => !prev);
   };
 
   return (
@@ -21,11 +21,12 @@ const Input: React.FC<CustomTextInputProps> = ({ icon = false, ...rest }) => {
         style={styles.textInput}
         placeholderTextColor={colors.greyMedium2}
         {...rest}
+        secureTextEntry={rest.secureTextEntry ? !isPasswordVisible : false}
       />
       {icon && (
         <TouchableOpacity onPress={onIconPress} style={styles.icon}>
           <Icon
-            name={icon && (isPasswordVisible ? 'eye-off-outline' : 'eye-outline')}
+            name={icon && (!isPasswordVisible ? 'eye-off-outline' : 'eye-outline')}
             size={24}
             color={colors.white}
           />

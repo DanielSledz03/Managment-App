@@ -1,15 +1,16 @@
-import useModalState from '@/hooks/useModalState';
+import TaskCompletedContent from './content/TaskCompletedContent';
+import TaskNotCompletedContent from './content/TaskNotCompletedContent';
 import CloseButton from '@components/Modal/CloseButton';
 import ModalComponent from '@components/Modal/Modal';
 import { colors } from '@constants/colors';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAxios } from '@/hooks/useAxios';
 import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
-import TaskNotCompletedContent from './content/TaskNotCompletedContent';
-import TaskCompletedContent from './content/TaskCompletedContent';
+import { useAxios } from '@/hooks/useAxios';
+import useModalState from '@/hooks/useModalState';
+import { TaskStatus } from '@/types/Task.type';
 
 const TaskPreviewModal = () => {
   const { isModalOpen, openedTaskId, task, date } = useModalState();
@@ -28,11 +29,22 @@ const TaskPreviewModal = () => {
 
   const handleTaskComplete = async () => {
     try {
-      await axios.patch(`/task/${openedTaskId}`, { isCompleted: !task.isCompleted });
+      await axios.patch(`/task/${openedTaskId}`, {
+        status:
+          task?.status === TaskStatus.InProgress ? TaskStatus.Completed : TaskStatus.InProgress,
+      });
       dispatch(TaskModalSliceAction.toggleModalOpen());
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleTaskRejection = () => {
+    dispatch(TaskModalSliceAction.toggleRejectionModalOpen());
+  };
+
+  const handleTaskChangeAssignee = () => {
+    dispatch(TaskModalSliceAction.toggleAssigneeChangeModalOpen());
   };
 
   if (!task) return <View />;
@@ -42,8 +54,14 @@ const TaskPreviewModal = () => {
       {task.priority && <Text style={styles.priority}>Priorytet</Text>}
       <CloseButton onPress={closeModal} />
 
-      {!task.isCompleted ? (
-        <TaskNotCompletedContent task={task} date={date} handleTaskComplete={handleTaskComplete} />
+      {task.status === TaskStatus.InProgress ? (
+        <TaskNotCompletedContent
+          handleTaskRejection={handleTaskRejection}
+          task={task}
+          date={date}
+          handleTaskChangeAssignee={handleTaskChangeAssignee}
+          handleTaskComplete={handleTaskComplete}
+        />
       ) : (
         <TaskCompletedContent task={task} date={date} handleTaskComplete={handleTaskComplete} />
       )}

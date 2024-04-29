@@ -1,12 +1,12 @@
-# Managment App
+# Managament App 📱
 
-Welcome to the mobile application for Android and iOS - Managment App, created using React Native!
+Welcome to the mobile application for Android and iOS - Managament App, created using React Native! 🚀
 
 ---
 
-## Preview:
+## Preview 📸
 
-### The application is currently under development!
+### The application is currently under development! 🚧
 
 <div class="display: flex; justify-between: space-around;">
    <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/main.png" width="200" height="432">
@@ -15,17 +15,16 @@ Welcome to the mobile application for Android and iOS - Managment App, created u
    <img src="https://github.com/DanielSledz03/Managment-App/blob/main/src/assets/salary.png" width="200" height="432">
 </div>
 
-## Basic Information:
+## Basic Information 📘
 
-- **Name**: Managment App
+- **Name**: Managament App
 - **Version**: 0.0.3
 - **Description**: Mobile Application created using React Native to better manage your business and employees.
 - **Author**: Daniel Śledź
-- **License**: MIT
 
 ---
 
-## Getting Started:
+## Getting Started 🚀
 
 To start working with this project, follow these steps:
 
@@ -59,6 +58,6 @@ To start working with this project, follow these steps:
 
 ---
 
-## Available Scripts:
+## Available Scripts 📜
 
 - `npm run start`: Starts the React Native development server.

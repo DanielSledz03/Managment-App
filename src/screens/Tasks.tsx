@@ -30,6 +30,10 @@ const Tasks = () => {
     completedTaskModalOpen,
   } = useSelector((state: RootState) => state.taskModal);
 
+  const user = useSelector((state: RootState) => state.user);
+
+  console.log(user.isAdmin);
+
   const axios = useAxios();
 
   const { data: tasksData } = useQuery<Task[]>({
@@ -111,16 +115,33 @@ const Tasks = () => {
       <ScrollView style={styles.container}>
         <Text style={styles.heading}>Lista zadań</Text>
         <View style={styles.tabButtons}>
-          <TabButton
-            title='Do zrobienia'
-            isSelected={!completedTasksTab}
-            onPress={() => setCompletedTasksTab(false)}
-          />
-          <TabButton
-            title='Wykonane'
-            isSelected={completedTasksTab}
-            onPress={() => setCompletedTasksTab(true)}
-          />
+          {user.isAdmin ? (
+            <>
+              <TabButton
+                title='Wykonane'
+                isSelected={!completedTasksTab}
+                onPress={() => setCompletedTasksTab(true)}
+              />
+              <TabButton
+                title='Odrzucone'
+                isSelected={completedTasksTab}
+                onPress={() => setCompletedTasksTab(true)}
+              />
+            </>
+          ) : (
+            <>
+              <TabButton
+                title='Do zrobienia'
+                isSelected={!completedTasksTab}
+                onPress={() => setCompletedTasksTab(false)}
+              />
+              <TabButton
+                title='Wykonane'
+                isSelected={completedTasksTab}
+                onPress={() => setCompletedTasksTab(true)}
+              />
+            </>
+          )}
         </View>
         <View style={{ marginBottom: 50 }}>
           {sortedAndGroupedTasks['Priorytet'] &&

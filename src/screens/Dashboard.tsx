@@ -55,14 +55,7 @@ const Dashboard = () => {
 
       <StartWorkButton />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingTop: 20,
-          marginBottom: 15,
-        }}
-      >
+      <View style={styles.userTasksContainer}>
         <InfoCard
           title='Przypisane zadania'
           value={
@@ -112,13 +105,21 @@ const styles = StyleSheet.create({
     fontSize: 34,
     color: colors.white,
     marginBottom: 20,
-    fontFamily: 'Jost-SemiBold',
+    fontWeight: 'bold',
+    fontFamily: 'Jost',
   },
 
   date: {
     fontSize: 16,
     color: colors.white,
     fontFamily: 'Jost-Regular',
+  },
+
+  userTasksContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 20,
+    marginBottom: 15,
   },
 });
 

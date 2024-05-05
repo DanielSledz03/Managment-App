@@ -34,7 +34,7 @@ To start working with this project, follow these steps:
    ```
 2. Navigate to the project directory:
    ```bash
-   cd FxFApp
+   cd Managment-App
    ```
 3. Install the dependencies:
    ```bash

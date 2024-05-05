@@ -3,12 +3,13 @@ import TextButton from '@components/Button/TextButton/TextButton';
 import TextArea from '@components/Input/TextArea';
 import ModalComponent from '@components/Modal/Modal';
 import { colors } from '@constants/colors';
+import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAxios } from '@/hooks/useAxios';
 import useModalState from '@/hooks/useModalState';
 import { TaskStatus } from '@/types/Task.type';
@@ -16,31 +17,42 @@ import { User } from '@/types/User.type';
 
 const TaskModalAssigneeChange = () => {
   const [rejectionReason, setRejctionReason] = useState('');
-  const [assigneeId, setAssigneeId] = useState<number | null>(null);
+  const [assigneeId, setAssigneeId] = useState<string | null>(null);
   const dispatch = useDispatch();
   const axios = useAxios();
+  const { id } = useSelector((state: RootState) => state.user);
 
   const { data: users } = useQuery<User[]>({
     queryKey: ['users'],
     queryFn: async () => {
-      return await axios.get('/user').then((res) => res.data);
+      return await axios
+        .get('/user')
+        .then((res) => res.data)
+        .catch((err) => err.response.data);
     },
     refetchOnWindowFocus: true,
   });
 
   const { openedTaskId, task } = useModalState();
 
-  const handleTaskRejection = async () => {
+  const handleTaskAssigneChange = async () => {
     try {
-      await axios.patch(`/task/${openedTaskId}`, {
-        status: TaskStatus.InProgress,
-        rejectionReason: rejectionReason,
-        userId: assigneeId,
-      });
-
-      dispatch(TaskModalSliceAction.toggleAssigneeChangeModalOpen());
-    } catch (err) {
-      console.log(err.response.data);
+      await axios
+        .patch(`/task/${openedTaskId}`, {
+          status: TaskStatus.InProgress,
+          rejectionReason: rejectionReason,
+          userId: assigneeId ? parseInt(assigneeId) : null,
+        })
+        .then(() => {
+          dispatch(TaskModalSliceAction.toggleAssigneeChangeModalOpen());
+          dispatch(TaskModalSliceAction.toggleModalOpen());
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+          Alert.alert('Błąd', 'Nie udało się przypisać zadania.');
+        });
+    } catch (err: any) {
+      return err.response.data;
     }
   };
 
@@ -48,39 +60,43 @@ const TaskModalAssigneeChange = () => {
     <ModalComponent containerStyle={styles.container} isOpen={true}>
       {task?.priority && <Text style={styles.priority}>Priorytet</Text>}
 
-      {users && users.length > 0 && (
-        <RNPickerSelect
-          placeholder={{ label: 'Wybierz osobę', value: null }}
-          style={{
-            inputIOS: {
-              fontSize: 16,
-              fontFamily: 'Jost',
-              color: colors.black,
-              backgroundColor: 'white',
-              minHeight: 50,
-              paddingLeft: 15,
-              marginBottom: 20,
-              borderRadius: 15,
-              borderWidth: 1,
-              borderColor: colors.greyDark3,
-            },
-            inputAndroid: {
-              fontSize: 16,
-              fontFamily: 'Jost',
-              color: colors.black,
-              backgroundColor: 'white',
-              borderRadius: 15,
-              marginBottom: 20,
-              borderWidth: 1,
-              borderColor: colors.greyDark3,
-            },
+      <RNPickerSelect
+        placeholder={{ label: 'Wybierz osobę', value: null }}
+        style={{
+          inputIOS: {
+            fontSize: 16,
+            fontFamily: 'Jost',
+            color: colors.black,
+            backgroundColor: colors.white,
+            minHeight: 50,
+            paddingLeft: 15,
+            marginBottom: 20,
+            borderRadius: 15,
+            borderWidth: 1,
+            borderColor: colors.greyDark3,
+          },
+          inputAndroid: {
+            fontSize: 16,
+            fontFamily: 'Jost',
+            color: colors.black,
+            backgroundColor: colors.white,
+            borderRadius: 15,
+            marginBottom: 20,
+            borderWidth: 1,
+            borderColor: colors.greyDark3,
+          },
 
-            placeholder: { fontSize: 16, fontFamily: 'Jost', color: colors.black },
-          }}
-          onValueChange={(value) => setAssigneeId(value)}
-          items={users.map((user) => ({ label: user.name, value: user.id }))}
-        />
-      )}
+          placeholder: { fontSize: 16, fontFamily: 'Jost', color: colors.black },
+        }}
+        onValueChange={(value: string) => setAssigneeId(value)}
+        items={
+          users?.length
+            ? users
+                ?.filter((user) => user.id !== id)
+                .map((user) => ({ label: user.name, value: user.id }))
+            : []
+        }
+      />
 
       <Text style={styles.title}>Wpisz powód przepisania zadania:</Text>
 
@@ -89,7 +105,7 @@ const TaskModalAssigneeChange = () => {
       <View style={styles.buttonsRow}>
         <GradientButton
           title='Potwierdź'
-          onPress={() => handleTaskRejection()}
+          onPress={() => handleTaskAssigneChange()}
           containerStyle={styles.submitButton}
           textStyle={{ fontSize: 16 }}
           gradientStyle={{ borderRadius: 10 }}

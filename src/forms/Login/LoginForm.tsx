@@ -3,8 +3,10 @@ import { colors } from '@constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
+import { Alert, StyleSheet, Text } from 'react-native';
 import Config from 'react-native-config';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '@/components/Input/Input';
 import { RootState } from '@/store';
@@ -16,30 +18,32 @@ const LoginForm = () => {
 
   console.log(Config.HOSTNAME);
 
+  const mutationFn = useCallback(async () => {
+    return await axios
+      .post(Config.HOSTNAME + '/auth/signin', {
+        email: login,
+        password: password,
+      })
+      .then(async (res: { data: { access_token: string; refresh_token: string } }) => {
+        Alert.alert('Sukces', 'Zalogowano pomyślnie!');
+
+        const accessToken = JSON.stringify(res.data.access_token);
+        await AsyncStorage.setItem('access_token', accessToken);
+
+        const refreshToken = JSON.stringify(res.data.refresh_token);
+        await AsyncStorage.setItem('refresh_token', refreshToken);
+
+        dispatch(AuthSliceActions.setAccessToken(res.data.access_token));
+        dispatch(AuthSliceActions.setRefreshToken(res.data.refresh_token));
+      })
+      .catch((err) => {
+        Alert.alert('Błąd', 'Nie udało się zalogować.');
+        console.log(err);
+      });
+  }, [dispatch, login, password]);
+
   const mutation = useMutation({
-    mutationFn: async () => {
-      return await axios
-        .post(Config.HOSTNAME + '/auth/signin', {
-          email: login,
-          password: password,
-        })
-        .then(async (res: { data: { access_token: string; refresh_token: string } }) => {
-          Alert.alert('Sukces', 'Zalogowano pomyślnie!');
-
-          const accessToken = JSON.stringify(res.data.access_token);
-          await AsyncStorage.setItem('access_token', accessToken);
-
-          const refreshToken = JSON.stringify(res.data.refresh_token);
-          await AsyncStorage.setItem('refresh_token', refreshToken);
-
-          dispatch(AuthSliceActions.setAccessToken(res.data.access_token));
-          dispatch(AuthSliceActions.setRefreshToken(res.data.refresh_token));
-        })
-        .catch((err) => {
-          Alert.alert('Błąd', 'Nie udało się zalogować.');
-          console.log(err);
-        });
-    },
+    mutationFn,
   });
 
   const handleSubmit = () => {
@@ -47,7 +51,7 @@ const LoginForm = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Logowanie</Text>
       <Text style={styles.description}>
         Zaloguj się na swoje konto, aby w pełni korzystać z możliwości aplikacji.
@@ -57,6 +61,7 @@ const LoginForm = () => {
         value={login}
         placeholder='Login'
         onChangeText={(e) => dispatch(AuthSliceActions.setLogin(e))}
+        autoComplete='email'
       />
       <Input
         secureTextEntry={true}
@@ -69,7 +74,7 @@ const LoginForm = () => {
       <SimpleButton title='Zaloguj się' onPress={handleSubmit} />
 
       <Text style={styles.resetPassword}>Nie pamiętam hasła</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

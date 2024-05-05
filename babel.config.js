@@ -4,6 +4,7 @@ module.exports = function (api) {
   return {
     presets: ['module:metro-react-native-babel-preset'],
     plugins: [
+      ["@babel/plugin-transform-private-methods", { "loose": true }],
       [
         'module-resolver',
         {

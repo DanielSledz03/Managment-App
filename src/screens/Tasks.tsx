@@ -5,10 +5,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import TaskCompletedPreviewModal from '@view/TaskModals/TaskCompletedPreviewModal';
 import TaskModalAssigneeChange from '@view/TaskModals/TaskModalAssigneeChange';
-import TaskPreviewModal from '@view/TaskModals/TaskPreviewModal/TaskPreviewModal';
+import TaskPreviewModal from '@view/TaskModals/TaskPreviewModal';
 import TaskRejectionModal from '@view/TaskModals/TaskRejectionModal';
-import TaskRestoreModal from '@view/TaskModals/TaskRestoreModal';
 import { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,10 +22,13 @@ const Tasks = () => {
 
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
-  const isModalOpen = useSelector((state: RootState) => state.taskModal.isOpen);
-  const { rejectionTaskModalOpen, restoreTaskModalOpen, assigneeChangeModalOpen } = useSelector(
-    (state: RootState) => state.taskModal,
-  );
+  const {
+    rejectionTaskModalOpen,
+    restoreTaskModalOpen,
+    assigneeChangeModalOpen,
+    isOpen,
+    completedTaskModalOpen,
+  } = useSelector((state: RootState) => state.taskModal);
 
   const axios = useAxios();
 
@@ -42,7 +45,14 @@ const Tasks = () => {
       queryClient.invalidateQueries({
         queryKey: ['tasks'],
       });
-    }, [queryClient, completedTasksTab, isModalOpen, rejectionTaskModalOpen, restoreTaskModalOpen]),
+    }, [
+      queryClient,
+      completedTasksTab,
+      isOpen,
+      rejectionTaskModalOpen,
+      restoreTaskModalOpen,
+      completedTaskModalOpen,
+    ]),
   );
 
   const getGroupLabel = (date: Date): string => {
@@ -83,12 +93,20 @@ const Tasks = () => {
     return groupedNonPriorityTasks;
   }, [tasksData]);
 
+  const handleTaskClick = (taskId: string) => {
+    if (completedTasksTab) {
+      dispatch(TaskModalSliceAction.toggleCompletedModalOpen(taskId));
+    } else {
+      dispatch(TaskModalSliceAction.toggleModalOpen(taskId));
+    }
+  };
+
   return (
     <>
-      {isModalOpen && <TaskPreviewModal />}
-      {restoreTaskModalOpen && <TaskRestoreModal />}
+      {isOpen && <TaskPreviewModal />}
       {rejectionTaskModalOpen && <TaskRejectionModal />}
       {assigneeChangeModalOpen && <TaskModalAssigneeChange />}
+      {completedTaskModalOpen && <TaskCompletedPreviewModal />}
 
       <ScrollView style={styles.container}>
         <Text style={styles.heading}>Lista zadań</Text>
@@ -121,7 +139,7 @@ const Tasks = () => {
                   )
                   .map((task: Task) => (
                     <TaskCard
-                      onPress={() => dispatch(TaskModalSliceAction.toggleModalOpen(task.id))}
+                      onPress={() => handleTaskClick(task.id)}
                       key={task.id}
                       taskTime={task.createdAt}
                       title={task.title}
@@ -148,7 +166,7 @@ const Tasks = () => {
                     )
                     .map((task: Task) => (
                       <TaskCard
-                        onPress={() => dispatch(TaskModalSliceAction.toggleModalOpen(task.id))}
+                        onPress={() => handleTaskClick(task.id)}
                         key={task.id}
                         taskTime={task.createdAt}
                         title={task.title}

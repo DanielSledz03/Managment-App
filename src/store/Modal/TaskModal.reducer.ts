@@ -6,6 +6,7 @@ export interface TaskModalState {
   restoreTaskModalOpen?: boolean;
   rejectionTaskModalOpen?: boolean;
   assigneeChangeModalOpen?: boolean;
+  completedTaskModalOpen?: boolean;
 }
 
 const initialState: TaskModalState = {
@@ -14,6 +15,7 @@ const initialState: TaskModalState = {
   restoreTaskModalOpen: false,
   rejectionTaskModalOpen: false,
   assigneeChangeModalOpen: false,
+  completedTaskModalOpen: false,
 };
 
 const TaskModalSlice = createSlice({
@@ -22,6 +24,11 @@ const TaskModalSlice = createSlice({
   reducers: {
     toggleModalOpen(state, action: PayloadAction<string | undefined>) {
       state.isOpen = !state.isOpen;
+      state.openedTaskId = action.payload;
+    },
+
+    toggleCompletedModalOpen(state, action: PayloadAction<string | undefined>) {
+      state.completedTaskModalOpen = !state.completedTaskModalOpen;
       state.openedTaskId = action.payload;
     },
 

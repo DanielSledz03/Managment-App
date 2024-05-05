@@ -25,6 +25,7 @@ const TaskRejectionModal = () => {
       });
 
       dispatch(TaskModalSliceAction.toggleRejectionModalOpen());
+      dispatch(TaskModalSliceAction.toggleModalOpen());
     } catch (err) {
       console.log(err);
     }

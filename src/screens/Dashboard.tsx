@@ -3,17 +3,18 @@ import { TaskCard } from '@components/TaskCard/TaskCard';
 import { colors } from '@constants/colors';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import HeaderBar from '@view/HeaderBar/HeaderBar';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import GradientText from '@/components/GradientText/GradientText';
 import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
 import { useAxios } from '@/hooks/useAxios';
 import { RootStackParamList } from '@/navigation/TabNavigation';
-import { Task } from '@/types/Task.type';
+import { Task, TaskStatus } from '@/types/Task.type';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;
 
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const navigation = useNavigation<DashboardNavigationProp>();
   const axios = useAxios();
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
 
   const today = new Date().toLocaleDateString('pl-PL', {
     day: 'numeric',
@@ -49,7 +51,7 @@ const Dashboard = () => {
     <ScrollView style={styles.container}>
       <HeaderBar />
       <Text style={styles.date}>{today}</Text>
-      <GradientText style={styles.heading}>Dzień dobry Julia!</GradientText>
+      <GradientText style={styles.heading}>Dzień dobry {user.name}!</GradientText>
 
       <StartWorkButton />
 
@@ -63,7 +65,11 @@ const Dashboard = () => {
       >
         <InfoCard
           title='Przypisane zadania'
-          value={tasks?.data?.length?.toString() || '0'}
+          value={
+            tasks?.data
+              ?.filter((task) => task.status === TaskStatus.InProgress)
+              .length?.toString() || '0'
+          }
           onPress={() => navigation.navigate('Tasks')}
         />
         <InfoCard title='Twoje wynagrodzenie' value={'1445 zł'} />
@@ -73,18 +79,21 @@ const Dashboard = () => {
         <>
           <GradientText style={styles.heading}>Przypisane zadania</GradientText>
 
-          {tasks.data.slice(0, 2).map((task: Task) => (
-            <TaskCard
-              onPress={() => {
-                navigation.navigate('Tasks');
-                dispatch(TaskModalSliceAction.toggleModalOpen(task.id));
-              }}
-              key={task.id}
-              taskTime={task.createdAt}
-              title={task.title}
-              priority={task.priority}
-            />
-          ))}
+          {tasks.data
+            .filter((task) => task.status === TaskStatus.InProgress)
+            .slice(0, 2)
+            .map((task: Task) => (
+              <TaskCard
+                onPress={() => {
+                  navigation.navigate('Tasks');
+                  dispatch(TaskModalSliceAction.toggleModalOpen(task.id));
+                }}
+                key={task.id}
+                taskTime={task.createdAt}
+                title={task.title}
+                priority={task.priority}
+              />
+            ))}
         </>
       )}
     </ScrollView>

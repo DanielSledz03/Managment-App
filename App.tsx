@@ -10,6 +10,7 @@ import { AppState, AppStateStatus, Platform, SafeAreaView } from 'react-native';
 import { Provider } from 'react-redux';
 import TabNavigation from '@/navigation/TabNavigation';
 import store from '@/store';
+import Config from 'react-native-config';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,8 @@ function App(): JSX.Element {
 
     return () => subscription.remove();
   }, []);
+
+  console.log('env', Config.HOSTNAME);
 
   return (
     <Provider store={store}>

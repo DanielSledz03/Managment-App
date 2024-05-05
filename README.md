@@ -44,20 +44,11 @@ To start working with this project, follow these steps:
    ```bash
    npm run start
    ```
-5. Run the project on Android or iOS:
-
-   ```bash
-   npx react-native run-android
-   ```
-
-   or
-
-   ```bash
-   npx react-native run-ios
-   ```
 
 ---
 
 ## Available Scripts 📜
 
 - `npm run start`: Starts the React Native development server.
+- `npx react-native run-android`: Starts the application on Android.
+- `npx react-native run-ios`: Starts the application on iOS.

@@ -1,6 +1,13 @@
 import { colors } from '@constants/colors';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import GradientText from '@/components/GradientText/GradientText';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import Input from '@components/Input/Input';
 import GradientButton from '@components/Button/GradientButton/GradientButton';
 import { useCallback, useState } from 'react';
@@ -15,90 +22,102 @@ const ChangePassword = ({ navigation }: any) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const [error, setError] = useState('');
   const [oldPasswordError, setOldPasswordError] = useState(false);
 
   const mutationFn = useCallback(async () => {
-    return await axios
-      .post(Config.HOSTNAME + '/auth/changePassword', {
+    if (!oldPassword) {
+      setOldPasswordError(true);
+      Alert.alert('Błąd', 'Podaj obecne hasło.');
+      return;
+    }
+    try {
+      await axios.post(Config.HOSTNAME + '/auth/changePassword', {
         email: user.email,
-        newPassword: newPassword,
-        oldPassword: oldPassword,
-      })
-      .then(async () => {
-        Alert.alert('Sukces', 'Zmieniono hasło!', [
-          { text: 'OK', onPress: () => navigation.navigate('Account') },
-        ]);
-      })
-      .catch((err) => {
-        Alert.alert('Błąd', 'Nie udało się zmienić hasła.');
-        console.log(err);
+        newPassword,
+        oldPassword,
       });
-  }, []);
+      Alert.alert('Sukces', 'Hasło zostało zmienione!', [
+        { text: 'OK', onPress: () => navigation.navigate('Account') },
+      ]);
+    } catch (err: any) {
+      if (err.response.data.message.message === 'Invalid old password') {
+        setOldPasswordError(true);
+        setError('Nieprawidłowe stare hasło.');
+        return;
+      }
+
+      setOldPasswordError(true);
+      setError('Wystąpił błąd.');
+    }
+  }, [user.email, newPassword, oldPassword, navigation]);
 
   const mutation = useMutation({
     mutationFn,
   });
 
-  const handleSubmit = () => {
-    const isPasswordValid =
-      newPassword.length >= 8 &&
-      /[A-Z]/.test(newPassword) &&
-      /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-
-    console.log(isPasswordValid);
-
-    if (!isPasswordValid) {
-      setPasswordMismatch(true);
-      return;
-    }
-
-    if (newPassword === confirmNewPassword) {
-      mutation.mutate();
-    } else {
-      setPasswordMismatch(true);
-    }
+  const validatePassword = (password: string) => {
+    return (
+      password.length >= 8 && /[A-Z]/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    );
   };
 
-  console.log(passwordMismatch);
+  const handleSubmit = () => {
+    setOldPasswordError(false);
+    if (!oldPassword) {
+      setOldPasswordError(true);
+      setError('Musisz wprowadzić obecne hasło.');
+      return;
+    }
+    if (!validatePassword(newPassword)) {
+      setError('Nowe hasło nie spełnia wymagań.');
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setError('Hasła nie są zgodne.');
+      return;
+    }
+    setError('');
+    mutation.mutate();
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.wrapper}>
-      <TouchableOpacity onPress={() => navigation.navigate('Account')} style={styles.backIcon}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
         <Image
           style={{ objectFit: 'contain', width: 28 }}
           source={require('../assets/icons/leftArrow.png')}
         />
       </TouchableOpacity>
-      <Text style={styles.heading}>Zmiana hasła</Text>
-      <Text style={[styles.errorText, !passwordMismatch ? { opacity: 0 } : null]}>
-        Nowe hasło nie spełnia wymagań
-      </Text>
-      <Input
-        value={oldPassword}
-        onChangeText={(e) => setOldPassword(e)}
-        placeholder='Obecne hasło'
-        secureTextEntry
-        icon
-      />
-      <Input
-        icon
-        placeholder='Nowe hasło'
-        value={newPassword}
-        onChangeText={(e) => setNewPassword(e)}
-        secureTextEntry
-        error={passwordMismatch && newPassword !== confirmNewPassword && newPassword === ''}
-      />
-      <Input
-        placeholder='Potwierdź nowe hasło'
-        icon
-        value={confirmNewPassword}
-        secureTextEntry
-        onChangeText={(e) => setConfirmNewPassword(e)}
-        error={passwordMismatch && newPassword !== confirmNewPassword}
-      />
-
-      <GradientButton title='Potwierdź' onPress={handleSubmit} />
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={50}>
+        <Text style={styles.heading}>Zmiana hasła</Text>
+        <Text style={[styles.errorText, { opacity: error ? 1 : 0 }]}>{error}</Text>
+        <Input
+          value={oldPassword}
+          onChangeText={setOldPassword}
+          placeholder='Obecne hasło'
+          secureTextEntry
+          icon
+          error={oldPasswordError}
+        />
+        <Input
+          icon
+          placeholder='Nowe hasło'
+          value={newPassword}
+          onChangeText={setNewPassword}
+          secureTextEntry
+          error={!!error}
+        />
+        <Input
+          placeholder='Potwierdź nowe hasło'
+          icon
+          value={confirmNewPassword}
+          onChangeText={setConfirmNewPassword}
+          secureTextEntry
+          error={!!error}
+        />
+        <GradientButton title='Potwierdź' onPress={handleSubmit} />
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };
@@ -130,14 +149,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  inputError: {
-    borderColor: 'red',
-    borderWidth: 1,
-  },
-
   errorText: {
     color: colors.red,
     marginBottom: 25,
+    textAlign: 'center',
   },
 });
 

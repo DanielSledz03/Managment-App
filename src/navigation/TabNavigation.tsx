@@ -19,6 +19,7 @@ import Tasks from '@/screens/Tasks';
 import WorkSchedule from '@/screens/WorkSchedule';
 import { RootState } from '@/store';
 import ChangePassword from '@/screens/ChangePassword';
+import SuccessChangedPassword from '@/screens/SuccessChangedPassword';
 
 export type RootStackParamList = {
   Dashboard: undefined; // Brak parametrów dla ekranu Dashboard
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   WorkSchedule: undefined; // Brak parametrów dla WorkSchedule
   Account: { userId: string }; // Ekran Account przyjmuje parametr `userId`
   ChangePassword: undefined; // Brak parametrów dla ChangePassword
+  SuccessChangedPassword: undefined; // Brak parametrów dla SuccessChangedPassword
 };
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -131,6 +133,7 @@ export default function TabNavigation() {
         <Tab.Screen name='WorkSchedule' component={WorkSchedule} />
         <Tab.Screen name='Account' component={Account} />
         <Tab.Screen name='ChangePassword' component={ChangePassword} />
+        <Tab.Screen name='SuccessChangedPassword' component={SuccessChangedPassword} />
       </Tab.Navigator>
     </NavigationContainer>
   );

@@ -18,12 +18,14 @@ import Dashboard from '@/screens/Dashboard';
 import Tasks from '@/screens/Tasks';
 import WorkSchedule from '@/screens/WorkSchedule';
 import { RootState } from '@/store';
+import ChangePassword from '@/screens/ChangePassword';
 
 export type RootStackParamList = {
   Dashboard: undefined; // Brak parametrów dla ekranu Dashboard
   Tasks: undefined; // Ekran Tasks przyjmuje parametr `taskId`
   WorkSchedule: undefined; // Brak parametrów dla WorkSchedule
   Account: { userId: string }; // Ekran Account przyjmuje parametr `userId`
+  ChangePassword: undefined; // Brak parametrów dla ChangePassword
 };
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -33,7 +35,7 @@ export default function TabNavigation() {
   const dispatch = useDispatch();
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout>();
   const axios = useAxios();
-  const [loading, setLoading] = useState(true); // Dodaj stan dla ładowania
+  const [loading, setLoading] = useState(true);
 
   const getUserData = useCallback(async () => {
     try {
@@ -128,6 +130,7 @@ export default function TabNavigation() {
         <Tab.Screen name='Tasks' component={Tasks} />
         <Tab.Screen name='WorkSchedule' component={WorkSchedule} />
         <Tab.Screen name='Account' component={Account} />
+        <Tab.Screen name='ChangePassword' component={ChangePassword} />
       </Tab.Navigator>
     </NavigationContainer>
   );

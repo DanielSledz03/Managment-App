@@ -10,12 +10,13 @@ import { useMutation } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '@store/index';
 
-const ChangePassword = () => {
+const ChangePassword = ({ navigation }: any) => {
   const user = useSelector((state: RootState) => state.user);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [passwordMismatch, setPasswordMismatch] = useState(false); // State to track if passwords mismatch
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState(false);
 
   const mutationFn = useCallback(async () => {
     return await axios
@@ -25,10 +26,12 @@ const ChangePassword = () => {
         oldPassword: oldPassword,
       })
       .then(async () => {
-        Alert.alert('Sukces', 'Zalogowano pomyślnie!');
+        Alert.alert('Sukces', 'Zmieniono hasło!', [
+          { text: 'OK', onPress: () => navigation.navigate('Account') },
+        ]);
       })
       .catch((err) => {
-        Alert.alert('Błąd', 'Nie udało się zalogować.');
+        Alert.alert('Błąd', 'Nie udało się zmienić hasła.');
         console.log(err);
       });
   }, []);
@@ -38,13 +41,30 @@ const ChangePassword = () => {
   });
 
   const handleSubmit = () => {
-    if (newPassword == confirmNewPassword) mutation.mutate();
-    else setPasswordMismatch(true);
+    const isPasswordValid =
+      newPassword.length >= 8 &&
+      /[A-Z]/.test(newPassword) &&
+      /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+    console.log(isPasswordValid);
+
+    if (!isPasswordValid) {
+      setPasswordMismatch(true);
+      return;
+    }
+
+    if (newPassword === confirmNewPassword) {
+      mutation.mutate();
+    } else {
+      setPasswordMismatch(true);
+    }
   };
+
+  console.log(passwordMismatch);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.wrapper}>
-      <TouchableOpacity style={styles.backIcon}>
+      <TouchableOpacity onPress={() => navigation.navigate('Account')} style={styles.backIcon}>
         <Image
           style={{ objectFit: 'contain', width: 28 }}
           source={require('../assets/icons/leftArrow.png')}
@@ -58,16 +78,22 @@ const ChangePassword = () => {
         value={oldPassword}
         onChangeText={(e) => setOldPassword(e)}
         placeholder='Obecne hasło'
+        secureTextEntry
+        icon
       />
       <Input
+        icon
         placeholder='Nowe hasło'
         value={newPassword}
         onChangeText={(e) => setNewPassword(e)}
-        error={passwordMismatch && newPassword !== confirmNewPassword}
+        secureTextEntry
+        error={passwordMismatch && newPassword !== confirmNewPassword && newPassword === ''}
       />
       <Input
         placeholder='Potwierdź nowe hasło'
+        icon
         value={confirmNewPassword}
+        secureTextEntry
         onChangeText={(e) => setConfirmNewPassword(e)}
         error={passwordMismatch && newPassword !== confirmNewPassword}
       />

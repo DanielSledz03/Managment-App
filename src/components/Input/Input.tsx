@@ -5,9 +5,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 interface CustomTextInputProps extends TextInputProps {
   icon?: boolean;
+  error?: boolean;
 }
 
-const Input: React.FC<CustomTextInputProps> = ({ icon = false, ...rest }) => {
+const Input: React.FC<CustomTextInputProps> = ({ icon = false, error = false, ...rest }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const onIconPress = () => {
@@ -15,12 +16,12 @@ const Input: React.FC<CustomTextInputProps> = ({ icon = false, ...rest }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, error ? styles.error : null]}>
       <TextInput
         autoCapitalize='none'
-        style={styles.textInput}
-        placeholderTextColor={colors.greyMedium2}
         {...rest}
+        style={[styles.textInput, error ? { color: colors.red } : null, rest.style]}
+        placeholderTextColor={error ? colors.red : colors.greyMedium2}
         secureTextEntry={rest.secureTextEntry ? !isPasswordVisible : false}
       />
       {icon && (
@@ -57,6 +58,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: '10%',
+  },
+
+  error: {
+    borderColor: 'red',
+    borderWidth: 2,
   },
 });
 

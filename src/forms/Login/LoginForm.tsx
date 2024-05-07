@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useCallback } from 'react';
-import { Alert, StyleSheet, Text } from 'react-native';
+import { Alert, KeyboardAvoidingView, StyleSheet, Text } from 'react-native';
 import Config from 'react-native-config';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,26 +52,28 @@ const LoginForm = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.heading}>Logowanie</Text>
-      <Text style={styles.description}>
-        Zaloguj się na swoje konto, aby w pełni korzystać z możliwości aplikacji.
-      </Text>
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={50}>
+        <Text style={styles.heading}>Logowanie</Text>
+        <Text style={styles.description}>
+          Zaloguj się na swoje konto, aby w pełni korzystać z możliwości aplikacji.
+        </Text>
 
-      <Input
-        value={login}
-        placeholder='Login'
-        onChangeText={(e) => dispatch(AuthSliceActions.setLogin(e))}
-        autoComplete='email'
-      />
-      <Input
-        secureTextEntry={true}
-        value={password}
-        icon
-        placeholder='Hasło'
-        onChangeText={(e) => dispatch(AuthSliceActions.setPassword(e))}
-      />
+        <Input
+          value={login}
+          placeholder='Login'
+          onChangeText={(e) => dispatch(AuthSliceActions.setLogin(e))}
+          autoComplete='email'
+        />
+        <Input
+          secureTextEntry={true}
+          value={password}
+          icon
+          placeholder='Hasło'
+          onChangeText={(e) => dispatch(AuthSliceActions.setPassword(e))}
+        />
 
-      <SimpleButton title='Zaloguj się' onPress={handleSubmit} />
+        <SimpleButton title='Zaloguj się' onPress={handleSubmit} />
+      </KeyboardAvoidingView>
 
       <Text style={styles.resetPassword}>Nie pamiętam hasła</Text>
     </SafeAreaView>
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: 'Jost-SemiBold',
     marginBottom: 10,
+    textAlign: 'center',
   },
 
   description: {

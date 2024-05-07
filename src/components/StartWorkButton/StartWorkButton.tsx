@@ -16,7 +16,7 @@ const StartWorkButton = () => {
   const [workStarted, setWorkStarted] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const iconScale = useRef(new Animated.Value(1)).current;
+  const iconScale = useRef(new Animated.Value(!workStarted ? 1 : 1.175)).current;
   const user = useSelector((state: RootState) => state.user);
 
   const animateIcon = useCallback((scaleToValue: number) => {
@@ -27,44 +27,54 @@ const StartWorkButton = () => {
     }).start();
   }, []);
 
-  const handlePressIn = useCallback(() => {
+  const handlePressIn = useCallback(async () => {
     animateIcon(workStarted ? 1 : 1.175);
+    const startTimeStored = await AsyncStorage.getItem('startTime');
 
-    const newTimer = setTimeout(async () => {
-      if (!workStarted) {
-        const startTime = new Date();
-        Alert.alert(
-          'Rozpoczęto pracę',
-          `Zaczynasz pracę o ${startTime.toLocaleTimeString('pl-PL')}`,
-        );
-        setWorkStarted(true);
-        setStartTime(startTime);
-        await AsyncStorage.setItem('startTime', startTime.toString());
-        const shiftCreationResponse = await axios.post(`${Config.HOSTNAME}/shifts/create`, {
-          startTime: startTime.toISOString(),
-          userId: user.id,
-          date: startTime.toISOString(),
-        });
-        await AsyncStorage.setItem('shiftId', shiftCreationResponse.data.id.toString());
-      } else {
-        const endTime = new Date();
-        Alert.alert(
-          'Zakończono pracę',
-          `Zakończyłeś pracę o ${endTime.toLocaleTimeString('pl-PL')}`,
-        );
-        setWorkStarted(false);
-        setStartTime(null);
-        const shiftId = await AsyncStorage.getItem('shiftId');
-        if (shiftId) {
-          await axios.patch(`${Config.HOSTNAME}/shifts`, {
-            endTime: endTime.toISOString(),
-            id: parseInt(shiftId),
+    if (!startTimeStored) {
+      // Start new work session
+      setTimer(
+        setTimeout(async () => {
+          const startTime = new Date();
+          Alert.alert(
+            'Rozpoczęto pracę',
+            `Zaczynasz pracę o ${startTime.toLocaleTimeString('pl-PL')}`,
+          );
+          setWorkStarted(true);
+          setStartTime(startTime);
+          await AsyncStorage.setItem('startTime', startTime.toISOString());
+          const shiftCreationResponse = await axios.post(`${Config.HOSTNAME}/shifts/create`, {
+            startTime: startTime.toISOString(),
+            userId: user.id,
+            date: startTime.toISOString(),
           });
-          await AsyncStorage.removeItem('shiftId');
-        }
-      }
-    }, 3000);
-    setTimer(newTimer);
+          await AsyncStorage.setItem('shiftId', shiftCreationResponse.data.id.toString());
+        }, 3000),
+      );
+    } else {
+      // End current work session
+      setTimer(
+        setTimeout(async () => {
+          const endTime = new Date();
+          Alert.alert(
+            'Zakończono pracę',
+            `Zakończyłeś pracę o ${endTime.toLocaleTimeString('pl-PL')}`,
+          );
+          setWorkStarted(false);
+          setStartTime(null);
+          setCurrentTime(null);
+          await AsyncStorage.removeItem('startTime');
+          const shiftId = await AsyncStorage.getItem('shiftId');
+          if (shiftId) {
+            await axios.patch(`${Config.HOSTNAME}/shifts`, {
+              endTime: endTime.toISOString(),
+              id: parseInt(shiftId),
+            });
+            await AsyncStorage.removeItem('shiftId');
+          }
+        }, 3000),
+      );
+    }
   }, [workStarted, user.id]);
 
   const handlePressOut = useCallback(() => {
@@ -76,6 +86,29 @@ const StartWorkButton = () => {
       animateIcon(1);
     }
   }, [timer, workStarted]);
+
+  useEffect(() => {
+    const checkStoredTime = async () => {
+      const startTimeStored = await AsyncStorage.getItem('startTime');
+      if (startTimeStored) {
+        setStartTime(new Date(startTimeStored));
+        setWorkStarted(true);
+        setCurrentTime(new Date());
+        if (!workStarted) {
+          animateIcon(1.175);
+        } else {
+          animateIcon(1);
+        }
+      }
+    };
+    checkStoredTime();
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (workStarted) {

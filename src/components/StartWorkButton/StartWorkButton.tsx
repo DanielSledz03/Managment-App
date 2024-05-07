@@ -1,74 +1,123 @@
 import { colors } from '@constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RootState } from '@store/index';
+import { useMutation } from '@tanstack/react-query';
 import { formatTimeDiff } from '@utils/formatTimeDiff';
-import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSelector } from 'react-redux';
 
 const StartWorkButton = () => {
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
-  const [workStarted, setWorkStarted] = useState<boolean>(false);
+  const [workStarted, setWorkStarted] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const iconScale = useRef(new Animated.Value(1)).current;
+  const iconScale = useRef(new Animated.Value(!workStarted ? 1 : 1.175)).current;
+  const user = useSelector((state: RootState) => state.user);
 
-  const handlePressIn = () => {
+  const animateIcon = useCallback((scaleToValue: number) => {
     Animated.timing(iconScale, {
-      toValue: workStarted ? 1 : 1.175,
+      toValue: scaleToValue,
       duration: 3000,
       useNativeDriver: true,
     }).start();
+  }, []);
 
-    const newTimer = setTimeout(() => {
-      if (!workStarted) {
-        Alert.alert(
-          'Rozpoczęto pracę',
-          `Zaczynasz pracę o ${new Date()?.toLocaleTimeString('pl-PL', {
-            hour: 'numeric',
-            minute: 'numeric',
-          })}`,
-        );
-        setWorkStarted(true);
-        setStartTime(new Date());
-      } else {
-        Alert.alert(
-          'Zakończono pracę',
-          `Zakończyłeś pracę o ${currentTime?.toLocaleDateString('pl-PL', {
-            hour: 'numeric',
-            minute: 'numeric',
-          })}.`,
-        );
-        setWorkStarted(false);
-        setStartTime(null);
-      }
-    }, 3000);
-    setTimer(newTimer);
-  };
+  const handlePressIn = useCallback(async () => {
+    animateIcon(workStarted ? 1 : 1.175);
+    const startTimeStored = await AsyncStorage.getItem('startTime');
 
-  const handlePressOut = () => {
-    if (timer !== null) {
+    if (!startTimeStored) {
+      // Start new work session
+      setTimer(
+        setTimeout(async () => {
+          const startTime = new Date();
+          Alert.alert(
+            'Rozpoczęto pracę',
+            `Zaczynasz pracę o ${startTime.toLocaleTimeString('pl-PL')}`,
+          );
+          setWorkStarted(true);
+          setStartTime(startTime);
+          await AsyncStorage.setItem('startTime', startTime.toISOString());
+          const shiftCreationResponse = await axios.post(`${Config.HOSTNAME}/shifts/create`, {
+            startTime: startTime.toISOString(),
+            userId: user.id,
+            date: startTime.toISOString(),
+          });
+          await AsyncStorage.setItem('shiftId', shiftCreationResponse.data.id.toString());
+        }, 3000),
+      );
+    } else {
+      // End current work session
+      setTimer(
+        setTimeout(async () => {
+          const endTime = new Date();
+          Alert.alert(
+            'Zakończono pracę',
+            `Zakończyłeś pracę o ${endTime.toLocaleTimeString('pl-PL')}`,
+          );
+          setWorkStarted(false);
+          setStartTime(null);
+          setCurrentTime(null);
+          await AsyncStorage.removeItem('startTime');
+          const shiftId = await AsyncStorage.getItem('shiftId');
+          if (shiftId) {
+            await axios.patch(`${Config.HOSTNAME}/shifts`, {
+              endTime: endTime.toISOString(),
+              id: parseInt(shiftId),
+            });
+            await AsyncStorage.removeItem('shiftId');
+          }
+        }, 3000),
+      );
+    }
+  }, [workStarted, user.id]);
+
+  const handlePressOut = useCallback(() => {
+    if (timer) {
       clearTimeout(timer);
       setTimer(null);
     }
-
     if (!workStarted) {
-      Animated.timing(iconScale, {
-        toValue: !workStarted ? 1 : 1.175,
-        duration: 2000,
-        useNativeDriver: true,
-      }).start();
+      animateIcon(1);
     }
-  };
+  }, [timer, workStarted]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (workStarted && startTime) {
-      interval = setInterval(() => {
+    const checkStoredTime = async () => {
+      const startTimeStored = await AsyncStorage.getItem('startTime');
+      if (startTimeStored) {
+        setStartTime(new Date(startTimeStored));
+        setWorkStarted(true);
+        setCurrentTime(new Date());
+        if (!workStarted) {
+          animateIcon(1.175);
+        } else {
+          animateIcon(1);
+        }
+      }
+    };
+    checkStoredTime();
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (workStarted) {
+      const interval = setInterval(() => {
         setCurrentTime(new Date());
       }, 1000);
+      return () => clearInterval(interval);
     }
-    return () => clearInterval(interval);
-  }, [workStarted, startTime]);
+  }, [workStarted]);
 
   return (
     <TouchableOpacity
@@ -88,10 +137,8 @@ const StartWorkButton = () => {
         </Animated.View>
         <Text style={styles.counterButtonText}>
           {workStarted
-            ? `Twoja zmiana trwa od ${formatTimeDiff(
-                startTime,
-                currentTime,
-              )}\n\nPrzytrzymaj odcisk przez 3 sekundy, aby zgłosić zakończenie pracy.`
+            ? `Twoja zmiana trwa od ${formatTimeDiff(startTime, currentTime)}
+               \n\nPrzytrzymaj odcisk przez 3 sekundy, aby zgłosić zakończenie pracy.`
             : 'Przytrzymaj odcisk przez 3 sekundy, aby zgłosić gotowość do pracy.'}
         </Text>
       </LinearGradient>

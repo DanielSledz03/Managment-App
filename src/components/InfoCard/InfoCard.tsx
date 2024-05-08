@@ -1,16 +1,33 @@
 import { colors } from '@constants/colors';
-import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 interface Props {
   title: string;
-  value: string;
+  value: string | (() => Promise<string>);
   onPress?: () => void;
+  styleForValue?: TextStyle;
+  style?: ViewStyle;
 }
 
-export const InfoCard = ({ title, value, onPress }: Props) => {
+export const InfoCard = ({ title, value, onPress, style, styleForValue }: Props) => {
+  const [resolvedValue, setResolvedValue] = useState('');
+
+  useEffect(() => {
+    if (typeof value === 'function') {
+      value().then(setResolvedValue);
+    } else {
+      setResolvedValue(value);
+    }
+  }, [value]);
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.cardContainer, style]}
+      activeOpacity={onPress ? 0.06 : 1}
+    >
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
@@ -18,9 +35,11 @@ export const InfoCard = ({ title, value, onPress }: Props) => {
         style={styles.gradientBackground}
       >
         <Text style={styles.titleText}>{title}</Text>
-        <Text style={styles.valueText}>{value}</Text>
+        <Text style={[styles.valueText, styleForValue]}>{resolvedValue}</Text>
 
-        <Image style={styles.arrowIcon} source={require('../../assets/icons/arrow.png')} />
+        {onPress && (
+          <Image style={styles.arrowIcon} source={require('../../assets/icons/arrow.png')} />
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -44,14 +63,17 @@ const styles = StyleSheet.create({
 
   titleText: {
     color: colors.white,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Jost-Medium',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 
   valueText: {
     color: colors.white,
     fontSize: 32,
-    fontFamily: 'Jost-Bold',
+    fontFamily: 'Jost',
+    fontWeight: 'bold',
   },
 
   arrowIcon: {

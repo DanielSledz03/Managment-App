@@ -20,6 +20,7 @@ import WorkSchedule from '@/screens/WorkSchedule';
 import { RootState } from '@/store';
 import ChangePassword from '@/screens/ChangePassword';
 import SuccessChangedPassword from '@/screens/SuccessChangedPassword';
+import SalaryScreen from '@/screens/Salary';
 
 export type RootStackParamList = {
   Dashboard: undefined; // Brak parametrów dla ekranu Dashboard
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   Account: { userId: string }; // Ekran Account przyjmuje parametr `userId`
   ChangePassword: undefined; // Brak parametrów dla ChangePassword
   SuccessChangedPassword: undefined; // Brak parametrów dla SuccessChangedPassword
+  Salary: undefined; // Brak parametrów dla Salary
 };
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -45,7 +47,6 @@ export default function TabNavigation() {
         refresh_token: refreshToken,
       });
       dispatch(UserSliceAction.setUserData(res.data.user));
-      console.log('User data fetched:', res.data.user);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -134,6 +135,7 @@ export default function TabNavigation() {
         <Tab.Screen name='Account' component={Account} />
         <Tab.Screen name='ChangePassword' component={ChangePassword} />
         <Tab.Screen name='SuccessChangedPassword' component={SuccessChangedPassword} />
+        <Tab.Screen name='Salary' component={SalaryScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

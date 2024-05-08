@@ -16,8 +16,6 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const { login, password } = useSelector((state: RootState) => state.auth);
 
-  console.log(Config.HOSTNAME);
-
   const mutationFn = useCallback(async () => {
     return await axios
       .post(Config.HOSTNAME + '/auth/signin', {

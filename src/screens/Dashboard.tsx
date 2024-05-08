@@ -65,7 +65,11 @@ const Dashboard = () => {
           }
           onPress={() => navigation.navigate('Tasks')}
         />
-        <InfoCard title='Twoje wynagrodzenie' value={'1445 zł'} />
+        <InfoCard
+          title='Twoje wynagrodzenie'
+          value={'1445 zł'}
+          onPress={() => navigation.navigate('Salary')}
+        />
       </View>
 
       {tasks.data && (

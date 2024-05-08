@@ -33,8 +33,6 @@ function App(): JSX.Element {
     return () => subscription.remove();
   }, []);
 
-  console.log('env', Config.HOSTNAME);
-
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>

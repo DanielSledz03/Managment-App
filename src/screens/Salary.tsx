@@ -15,6 +15,7 @@ import BonusBox from '@components/BonusBox/BonusBox';
 import { Bonus } from '@/types/Bonus.type';
 import { InfoCardAsync } from '@components/InfoCard/InfoCardAsync';
 import BonusesAndPenalties from '@view/BonusesAndPenalties/BonusesAndPenalties';
+import { Penalty } from '@/types/Penalty.type';
 
 interface SalaryScreenProps {
   navigation: NavigationProp<SalaryScreenProps>;
@@ -64,9 +65,25 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
     queryKey: ['bonuses'],
     queryFn: async () => {
       try {
-        return await axios.get<Bonus[]>(`/bonus/monthly/${user.id}`).then((res) => res.data);
+        return await axios.get<Bonus[]>(`/reward/bonus/monthly/${user.id}`).then((res) => res.data);
       } catch (error: any) {
         console.error('Error fetching user bonuses:', error.message);
+      }
+
+      return [];
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  const userPenalties = useQuery<Penalty[]>({
+    queryKey: ['penalties'],
+    queryFn: async () => {
+      try {
+        return await axios
+          .get<Bonus[]>(`/reward/penalty/monthly/${user.id}`)
+          .then((res) => res.data);
+      } catch (error: any) {
+        console.error('Error fetching user penalties:', error.message);
       }
 
       return [];
@@ -77,7 +94,7 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({
-        queryKey: ['monthlyShifts', 'todayShifts', 'bonuses'],
+        queryKey: ['monthlyShifts', 'todayShifts', 'bonuses', 'penalties'],
       });
     }, [queryClient]),
   );
@@ -143,7 +160,8 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
           value={async () =>
             (
               (await monthlyShiftsValue).hours * 23.5 +
-              userBonuses.data!.reduce((acc, obj) => acc + obj.amount, 0)
+              userBonuses.data!.reduce((acc, obj) => acc + obj.amount, 0) +
+              userPenalties.data!.reduce((acc, obj) => acc + obj.amount, 0)
             ).toString() + ' zł'
           }
           styleForValue={styles.infoCardValue}
@@ -152,7 +170,7 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
       </View>
 
       <BonusesAndPenalties title='Premie' bonuses={userBonuses.data || []} />
-      <BonusesAndPenalties title='Kary' bonuses={userBonuses.data || []} />
+      <BonusesAndPenalties title='Kary' bonuses={userPenalties.data || []} />
     </ScrollView>
   );
 };

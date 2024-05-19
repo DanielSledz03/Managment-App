@@ -10,11 +10,16 @@ interface BonusBoxProps {
 }
 
 const BonusesAndPenalties = ({ bonuses, title }: BonusBoxProps) => {
+  if (!bonuses.length) {
+    return null;
+  }
+
   return (
     <>
       <GradientText style={[styles.heading, { marginBottom: 15 }]}>{title}</GradientText>
       {bonuses.map((bonus) => (
         <BonusBox
+          key={bonus.id}
           title={bonus.description}
           amount={bonus.amount.toString() + ' zł'}
           date={bonus.createdAt}

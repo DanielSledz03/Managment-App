@@ -7,7 +7,7 @@ import { RootState } from '@store/index';
 import { TaskModalSliceAction } from '@store/Modal/TaskModal.reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import HeaderBar from '@view/HeaderBar/HeaderBar';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import GradientText from '@/components/GradientText/GradientText';
@@ -15,6 +15,10 @@ import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
 import { useAxios } from '@/hooks/useAxios';
 import { RootStackParamList } from '@/navigation/TabNavigation';
 import { Task, TaskStatus } from '@/types/Task.type';
+import { Bonus } from '@/types/Bonus.type';
+import { Penalty } from '@/types/Penalty.type';
+import { Shift } from '@/types/Shift.type';
+import { sumAllShifts } from '@utils/sumAllShifts';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;
 
@@ -39,12 +43,66 @@ const Dashboard = () => {
     refetchOnWindowFocus: true,
   });
 
+  const userBonuses = useQuery<Bonus[]>({
+    queryKey: ['bonuses'],
+    queryFn: async () => {
+      try {
+        return await axios.get<Bonus[]>(`/reward/bonus/monthly/${user.id}`).then((res) => res.data);
+      } catch (error: any) {
+        console.error('Error fetching user bonuses:', error.message);
+      }
+
+      return [];
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  const userPenalties = useQuery<Penalty[]>({
+    queryKey: ['penalties'],
+    queryFn: async () => {
+      try {
+        return await axios
+          .get<Bonus[]>(`/reward/penalty/monthly/${user.id}`)
+          .then((res) => res.data);
+      } catch (error: any) {
+        console.error('Error fetching user penalties:', error.message);
+      }
+
+      return [];
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  const userMonthlyShifts = useQuery<Shift[]>({
+    queryKey: ['monthlyShifts'],
+    queryFn: async () => {
+      const currentDate = new Date();
+      try {
+        return await axios
+          .get<
+            Shift[]
+          >(`/shifts/user-monthly-shifts/${user.id}/${currentDate.getMonth()}/${currentDate.getFullYear()}`)
+          .then((res) => res.data);
+      } catch (error: any) {
+        console.error('Error fetching user monthly shifts:', error.message);
+      }
+
+      return [];
+    },
+    refetchOnWindowFocus: true,
+  });
+
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({
-        queryKey: ['tasks'],
+        queryKey: ['tasks', 'bonuses', 'penalties'],
       });
     }, [queryClient]),
+  );
+
+  const monthlyShiftsValue = useMemo(
+    () => sumAllShifts(userMonthlyShifts.data || []),
+    [userMonthlyShifts.data],
   );
 
   return (
@@ -67,7 +125,13 @@ const Dashboard = () => {
         />
         <InfoCard
           title='Twoje wynagrodzenie'
-          value={'1445 zł'}
+          value={async () =>
+            (
+              (await monthlyShiftsValue).hours * 23.5 +
+              (userBonuses.data || []).reduce((acc, obj) => acc + obj.amount, 0) +
+              (userPenalties.data || []).reduce((acc, obj) => acc + obj.amount, 0)
+            ).toString() + ' zł'
+          }
           onPress={() => navigation.navigate('Salary')}
         />
       </View>

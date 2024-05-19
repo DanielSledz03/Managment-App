@@ -160,8 +160,8 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
           value={async () =>
             (
               (await monthlyShiftsValue).hours * 23.5 +
-              userBonuses.data!.reduce((acc, obj) => acc + obj.amount, 0) +
-              userPenalties.data!.reduce((acc, obj) => acc + obj.amount, 0)
+              (userBonuses.data || []).reduce((acc, obj) => acc + obj.amount, 0) +
+              (userPenalties.data || []).reduce((acc, obj) => acc + obj.amount, 0)
             ).toString() + ' zł'
           }
           styleForValue={styles.infoCardValue}

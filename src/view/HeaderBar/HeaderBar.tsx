@@ -6,7 +6,7 @@ const HeaderBar = () => {
   return (
     <View style={styles.headerBar}>
       <TouchableOpacity style={styles.userIcon}>
-        <Image source={require('../../assets/icons/fox.jpg')} style={styles.userIconImage} />
+        <Image source={require('../../assets/icons/logo.png')} style={styles.userIconImage} />
       </TouchableOpacity>
 
       <TouchableOpacity>

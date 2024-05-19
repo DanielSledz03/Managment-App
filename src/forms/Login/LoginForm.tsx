@@ -16,8 +16,6 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   const { login, password } = useSelector((state: RootState) => state.auth);
 
-  console.log(Config.HOSTNAME);
-
   const mutationFn = useCallback(async () => {
     return await axios
       .post(Config.HOSTNAME + '/auth/signin', {
@@ -52,28 +50,28 @@ const LoginForm = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={50}>
-        <Text style={styles.heading}>Logowanie</Text>
-        <Text style={styles.description}>
-          Zaloguj się na swoje konto, aby w pełni korzystać z możliwości aplikacji.
-        </Text>
+      {/* <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={50}> */}
+      <Text style={styles.heading}>Logowanie</Text>
+      <Text style={styles.description}>
+        Zaloguj się na swoje konto, aby w pełni korzystać z możliwości aplikacji.
+      </Text>
 
-        <Input
-          value={login}
-          placeholder='Login'
-          onChangeText={(e) => dispatch(AuthSliceActions.setLogin(e))}
-          autoComplete='email'
-        />
-        <Input
-          secureTextEntry={true}
-          value={password}
-          icon
-          placeholder='Hasło'
-          onChangeText={(e) => dispatch(AuthSliceActions.setPassword(e))}
-        />
+      <Input
+        value={login}
+        placeholder='Login'
+        onChangeText={(e) => dispatch(AuthSliceActions.setLogin(e))}
+        autoComplete='email'
+      />
+      <Input
+        secureTextEntry={true}
+        value={password}
+        icon
+        placeholder='Hasło'
+        onChangeText={(e) => dispatch(AuthSliceActions.setPassword(e))}
+      />
 
-        <SimpleButton title='Zaloguj się' onPress={handleSubmit} />
-      </KeyboardAvoidingView>
+      <SimpleButton title='Zaloguj się' onPress={handleSubmit} />
+      {/* </KeyboardAvoidingView> */}
 
       <Text style={styles.resetPassword}>Nie pamiętam hasła</Text>
     </SafeAreaView>

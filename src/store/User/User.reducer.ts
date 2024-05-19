@@ -5,6 +5,7 @@ export interface UserState {
   email: string;
   id: string;
   isAdmin: boolean;
+  earningPerHour: number;
 }
 
 const initialState: UserState = {
@@ -12,6 +13,7 @@ const initialState: UserState = {
   email: '',
   id: '',
   isAdmin: false,
+  earningPerHour: 0,
 };
 
 const UserSlice = createSlice({
@@ -23,6 +25,7 @@ const UserSlice = createSlice({
       state.email = action.payload.email;
       state.id = action.payload.id;
       state.isAdmin = action.payload.isAdmin;
+      state.earningPerHour = action.payload.earningPerHour;
     },
   },
 });

@@ -138,7 +138,7 @@ const StartWorkButton = () => {
         <Text style={styles.counterButtonText}>
           {workStarted
             ? `Twoja zmiana trwa od ${formatTimeDiff(startTime, currentTime)}
-               \n\nPrzytrzymaj odcisk przez 3 sekundy, aby zgłosić zakończenie pracy.`
+               \nPrzytrzymaj odcisk przez 3 sekundy, aby zgłosić zakończenie pracy.`
             : 'Przytrzymaj odcisk przez 3 sekundy, aby zgłosić gotowość do pracy.'}
         </Text>
       </LinearGradient>

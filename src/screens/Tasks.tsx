@@ -32,8 +32,6 @@ const Tasks = () => {
 
   const user = useSelector((state: RootState) => state.user);
 
-  console.log(user.isAdmin);
-
   const axios = useAxios();
 
   const { data: tasksData } = useQuery<Task[]>({

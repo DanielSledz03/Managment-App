@@ -14,10 +14,7 @@ import GradientText from '@/components/GradientText/GradientText';
 import StartWorkButton from '@view/StartWorkButton/StartWorkButton';
 import { useAxios } from '@/hooks/useAxios';
 import { RootStackParamList } from '@/navigation/TabNavigation';
-import { Task, TaskStatus } from '@/types/Task.type';
-import { Bonus } from '@/types/Bonus.type';
-import { Penalty } from '@/types/Penalty.type';
-import { Shift } from '@/types/Shift.type';
+import { Shift, Penalty, Bonus, Task, TaskStatus } from '@/types';
 import { sumAllShifts } from '@utils/sumAllShifts';
 
 type DashboardNavigationProp = BottomTabNavigationProp<RootStackParamList, 'Dashboard'>;

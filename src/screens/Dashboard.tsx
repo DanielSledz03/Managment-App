@@ -11,7 +11,7 @@ import { useCallback, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import GradientText from '@/components/GradientText/GradientText';
-import StartWorkButton from '@/components/StartWorkButton/StartWorkButton';
+import StartWorkButton from '@view/StartWorkButton/StartWorkButton';
 import { useAxios } from '@/hooks/useAxios';
 import { RootStackParamList } from '@/navigation/TabNavigation';
 import { Task, TaskStatus } from '@/types/Task.type';

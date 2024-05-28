@@ -131,19 +131,37 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
         <GradientText style={styles.heading}>Wynagrodzenie</GradientText>
       </View>
 
-      <Text style={styles.hourlyRateText}>Twoja stawka godzinowa:</Text>
-      <Text style={styles.hourlyRate}>{user.earningPerHour.toPrecision(4)} zł / brutto</Text>
+      {user.earningPerHour && (
+        <>
+          <Text style={styles.hourlyRateText}>Twoja stawka godzinowa:</Text>
+          <Text style={styles.hourlyRate}>{user.earningPerHour.toPrecision(4)} zł / brutto</Text>
+        </>
+      )}
 
       <View style={styles.infoCardWrapper}>
         <InfoCardAsync
           title='Czas pracy dziś'
-          fetchValue={async () => (await todayShiftsValue).text}
+          fetchValue={async () => {
+            try {
+              return (await todayShiftsValue).text;
+            } catch (error) {
+              console.error('Error fetching today shifts value:', error);
+              return '0';
+            }
+          }}
           styleForValue={styles.infoCardValue}
           style={styles.infoCard}
         />
         <InfoCardAsync
           title='Łączny czas pracy'
-          fetchValue={async () => (await monthlyShiftsValue).text}
+          fetchValue={async () => {
+            try {
+              return (await monthlyShiftsValue).text;
+            } catch (error) {
+              console.error('Error fetching monthly shifts value:', error);
+              return '0';
+            }
+          }}
           styleForValue={styles.infoCardValue}
           style={styles.infoCard}
         />

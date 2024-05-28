@@ -35,7 +35,7 @@ const Dashboard = () => {
   const tasks: { data?: Task[] } = useQuery({
     queryKey: ['tasks'],
     queryFn: async () => {
-      return await axios.get('/task').then((res) => res.data);
+      return await axios.get(`/task/user/${user.id}`).then((res) => res.data);
     },
     refetchOnWindowFocus: true,
   });
@@ -102,6 +102,8 @@ const Dashboard = () => {
     [userMonthlyShifts.data],
   );
 
+  console.log(tasks);
+
   return (
     <ScrollView style={styles.container}>
       <HeaderBar />
@@ -133,7 +135,7 @@ const Dashboard = () => {
         />
       </View>
 
-      {tasks.data && (
+      {tasks?.data && (
         <>
           <GradientText style={styles.heading}>Przypisane zadania</GradientText>
 

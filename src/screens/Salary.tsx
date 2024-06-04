@@ -21,26 +21,41 @@ interface SalaryScreenProps {
   navigation: NavigationProp<SalaryScreenProps>;
 }
 
+interface MonthlyShifts {
+  minutes: number;
+  seconds: number;
+  hours: number;
+}
+
 const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
   const user = useSelector((state: RootState) => state.user);
   const queryClient = useQueryClient();
   const axios = useAxios();
 
-  const userMonthlyShifts = useQuery<Shift[]>({
+  const userEarnings = useQuery<number>({
+    queryKey: ['earnings'],
+    queryFn: async () => {
+      try {
+        const res = await axios.get<number>(`/user/${user.id}/earnings`);
+        return res.data;
+      } catch (error: any) {
+        console.error('Error fetching user bonuses:', error.message);
+        throw error;
+      }
+    },
+    refetchOnWindowFocus: true,
+  });
+
+  const userMonthlyShifts = useQuery<MonthlyShifts>({
     queryKey: ['monthlyShifts'],
     queryFn: async () => {
-      const currentDate = new Date();
       try {
-        return await axios
-          .get<
-            Shift[]
-          >(`/shifts/user-monthly-shifts/${user.id}/${currentDate.getMonth()}/${currentDate.getFullYear()}`)
-          .then((res) => res.data);
+        return await axios.get<MonthlyShifts>(`/user/${user.id}/shifts`).then((res) => res.data);
       } catch (error: any) {
         console.error('Error fetching user monthly shifts:', error.message);
       }
 
-      return [];
+      return { minutes: 0, seconds: 0, hours: 0 };
     },
     refetchOnWindowFocus: true,
   });
@@ -94,7 +109,7 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       queryClient.invalidateQueries({
-        queryKey: ['monthlyShifts', 'todayShifts', 'bonuses', 'penalties'],
+        queryKey: ['monthlyShifts', 'todayShifts', 'bonuses', 'penalties', 'earnings'],
       });
     }, [queryClient]),
   );
@@ -106,11 +121,6 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
     }
     return [{ startTime: startTimeStr, endTime: new Date().toISOString() }];
   }, []);
-
-  const monthlyShiftsValue = useMemo(
-    () => sumAllShifts(userMonthlyShifts.data || []),
-    [userMonthlyShifts.data],
-  );
 
   const todayShiftsValue = useMemo(
     () =>
@@ -131,19 +141,34 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
         <GradientText style={styles.heading}>Wynagrodzenie</GradientText>
       </View>
 
-      <Text style={styles.hourlyRateText}>Twoja stawka godzinowa:</Text>
-      <Text style={styles.hourlyRate}>{user.earningPerHour.toPrecision(4)} zł / brutto</Text>
+      {user.earningPerHour && (
+        <>
+          <Text style={styles.hourlyRateText}>Twoja stawka godzinowa:</Text>
+          <Text style={styles.hourlyRate}>{user.earningPerHour.toPrecision(4)} zł / brutto</Text>
+        </>
+      )}
 
       <View style={styles.infoCardWrapper}>
         <InfoCardAsync
           title='Czas pracy dziś'
-          fetchValue={async () => (await todayShiftsValue).text}
+          fetchValue={async () => {
+            try {
+              return (await todayShiftsValue).text;
+            } catch (error) {
+              console.error('Error fetching today shifts value:', error);
+              return '0';
+            }
+          }}
           styleForValue={styles.infoCardValue}
           style={styles.infoCard}
         />
         <InfoCardAsync
           title='Łączny czas pracy'
-          fetchValue={async () => (await monthlyShiftsValue).text}
+          fetchValue={async () =>
+            (userMonthlyShifts.data &&
+              `${userMonthlyShifts.data?.hours ?? ''}:${userMonthlyShifts.data?.minutes ?? ''}:${userMonthlyShifts.data?.seconds ?? ''}`) ||
+            ''
+          }
           styleForValue={styles.infoCardValue}
           style={styles.infoCard}
         />
@@ -157,13 +182,7 @@ const SalaryScreen: React.FC<SalaryScreenProps> = ({ navigation }) => {
 
         <InfoCard
           title='Zarobiłeś w obecnym miesiącu'
-          value={async () =>
-            (
-              (await monthlyShiftsValue).hours * 23.5 +
-              (userBonuses.data || []).reduce((acc, obj) => acc + obj.amount, 0) +
-              (userPenalties.data || []).reduce((acc, obj) => acc + obj.amount, 0)
-            ).toString() + ' zł'
-          }
+          value={async () => (await userEarnings.data) + ' zł'}
           styleForValue={styles.infoCardValue}
           style={{ ...styles.infoCard, ...styles.infoCardExtra }}
         />

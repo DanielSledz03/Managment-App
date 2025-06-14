@@ -14,14 +14,11 @@ Professional mobile application for business management and employee oversight, 
 - **Cross-Platform**: Native performance on both iOS and Android
 - **Modern Architecture**: Built with React Native 0.74.1 and TypeScript
 - **State Management**: Redux Toolkit for predictable state management
-- **Data Fetching**: TanStack Query for efficient server state management
 - **Authentication**: JWT-based authentication with automatic token refresh
+- **Task Management**: Complete task tracking and management system
+- **Work Schedule**: Employee work schedule management
+- **Salary Tracking**: Salary and bonus management features
 - **Offline Support**: Network status monitoring and offline capabilities
-- **Secure Storage**: AsyncStorage for secure data persistence
-- **Navigation**: React Navigation with bottom tab navigation
-- **UI Components**: Custom reusable components with consistent design
-- **Form Handling**: Robust form validation and error handling
-- **Testing**: Jest for unit testing
 
 ## 🛠️ Tech Stack
 
